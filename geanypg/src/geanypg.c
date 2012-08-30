@@ -19,6 +19,7 @@
  */
 
 #include "geanypg.h"
+#include "keybindings.h"
 
 /* These items are set by Geany before plugin_init() is called. */
 GeanyPlugin     *geany_plugin;
@@ -39,6 +40,12 @@ PLUGIN_SET_TRANSLATABLE_INFO(
                 _("Hans Alves <alves.h88@gmail.com>"))
 
 static GtkWidget * main_menu_item = NULL;
+
+GtkWidget *submenu;
+GtkWidget *encrypt;
+GtkWidget *sign;
+GtkWidget *decrypt;
+GtkWidget *verify;
 
 static gpgme_error_t geanypg_init_gpgme(void)
 {
@@ -62,14 +69,25 @@ gpgme_error_t geanypg_show_err_msg(gpgme_error_t err)
     return err;
 }
 
+void keybindings_init(void)
+{
+	/* Preparing */
+	GeanyKeyGroup *key_group;
+	key_group = plugin_set_key_group(geany_plugin, "geanypg", COUNT_KB, NULL);
+	
+	/* Setting up each keybinding */
+	keybindings_set_item(key_group, ENCRYPT_KB, geanypg_kb_encrypt,
+		0, 0, "encrypt_file", _("Encrypt"), encrypt);
+	keybindings_set_item(key_group, DECRYPT_KB, geanypg_kb_decrypt,
+		0, 0, "decrypt_file", _("Decrypt"), decrypt);
+	keybindings_set_item(key_group, SIGN_KB, geanypg_kb_sign,
+		0, 0, "sign_file", _("Sign"), sign);
+	keybindings_set_item(key_group, VERIFY_KB, geanypg_kb_verify,
+		0, 0, "verify_file", _("Verify"), verify);
+}
+
 void plugin_init(GeanyData *data)
 {
-    GtkWidget * submenu;
-    GtkWidget * encrypt;
-    GtkWidget * sign;
-    GtkWidget * decrypt;
-    GtkWidget * verify;
-
     gpgme_error_t err = geanypg_init_gpgme();
     if (err)
     {
@@ -110,6 +128,8 @@ void plugin_init(GeanyData *data)
     g_signal_connect(sign,    "activate", G_CALLBACK(geanypg_sign_cb), NULL);
     g_signal_connect(decrypt, "activate", G_CALLBACK(geanypg_decrypt_cb), NULL);
     g_signal_connect(verify, "activate", G_CALLBACK(geanypg_verify_cb), NULL);
+    
+    keybindings_init();
 }
 
 

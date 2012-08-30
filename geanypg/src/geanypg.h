@@ -56,6 +56,16 @@ extern GeanyPlugin     *geany_plugin;
 extern GeanyData       *geany_data;
 extern GeanyFunctions  *geany_functions;
 
+/* Keybinding(s) */
+enum
+{
+	ENCRYPT_KB,
+	DECRYPT_KB,
+	SIGN_KB,
+	VERIFY_KB,
+	COUNT_KB
+};
+
 /* auxiliary functions (helper_functions.c) */
 void geanypg_init_ed(encrypt_data * ed);
 int geanypg_get_keys(encrypt_data * ed);
