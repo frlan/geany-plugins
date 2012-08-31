@@ -19,7 +19,7 @@
  */
 
 #include "geanypg.h"
-#include "keybindings.h"
+#include "geanypg_keybindings.h"
 
 /* These items are set by Geany before plugin_init() is called. */
 GeanyPlugin     *geany_plugin;
@@ -110,6 +110,8 @@ void plugin_init(GeanyData *data)
     gtk_widget_show(sign);
     gtk_widget_show(decrypt);
     gtk_widget_show(verify);
+    
+    keybindings_init();
 
     gtk_menu_append(GTK_MENU(submenu), encrypt);
     gtk_menu_append(GTK_MENU(submenu), sign);
@@ -128,8 +130,6 @@ void plugin_init(GeanyData *data)
     g_signal_connect(sign,    "activate", G_CALLBACK(geanypg_sign_cb), NULL);
     g_signal_connect(decrypt, "activate", G_CALLBACK(geanypg_decrypt_cb), NULL);
     g_signal_connect(verify, "activate", G_CALLBACK(geanypg_verify_cb), NULL);
-    
-    keybindings_init();
 }
 
 

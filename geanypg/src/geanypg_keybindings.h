@@ -1,5 +1,5 @@
 /*
- * keybindings.c
+ * geanypg_keybindings.h
  * 
  * Copyright 2012 Frank Lanitz <frank@frank.uvena.de>
  * 
@@ -20,22 +20,12 @@
  * 
  * 
  */
+#ifndef GEANYPGKEYBINDINGS_H
+#define GEANYPGKEYBINDINGS_H
 
-#include "keybindings.h"
-#include "geanypg.h"
+void geanypg_kb_encrypt (guint key_id);
+void geanypg_kb_sign (guint key_id);
+void geanypg_kb_decrypt (guint key_id);
+void geanypg_kb_verify (guint key_id);
 
-void geanypg_kb_encrypt (guint key_id)
-{
-}
-
-void geanypg_kb_sign (guint key_id)
-{
-}
-
-void geanypg_kb_decrypt (guint key_id)
-{
-}
-
-void geanypg_kb_verify (guint key_id)
-{
-}
+#endif
