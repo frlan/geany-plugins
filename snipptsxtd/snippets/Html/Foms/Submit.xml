@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="SUBMIT_NAME" label="Name">submit</textbox>    
+    <textbox name="SUBMIT_TEXT" label="Button Text">Submit</textbox>    
+  </form>
+  
+  <code>&lt;input type="submit" name="SUBMIT_NAME" value="SUBMIT_TEXT" /&gt;</code>
+
+</doc>

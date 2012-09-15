@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="TABL_COL" label="Number of Columns">3</textbox>    
+    <textbox name="TABL_ROW" label="Number of Rows">3</textbox>    
+    <script name="SCRIPT_OUTPUT">/etc/geany/codemenu/snippets/Html/Misc/generate_table</script>
+  </form>
+
+  
+  <code>SCRIPT_OUTPUT</code>
+
+</doc>

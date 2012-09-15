@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="REFRESH_TIME" label="Refresh Time">5</textbox>    
+    <textbox name="DESTINATION_URL" label="Destination Url">http://www.google.pt</textbox>    
+  </form>
+  
+  <code>&lt;meta http-equiv="refresh" content="REFRESH_TIME; URL=DESTINATION_URL"&gt;</code>
+
+</doc>

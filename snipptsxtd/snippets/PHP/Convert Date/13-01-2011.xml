@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="DATE_VARNAME" label="Variable Name"></textbox>        
+    <combobox name="DATE_SEPARATOR" label="Date Separator">
+      <option label="Space"> </option>        
+      <option label="-">-</option>
+      <option label="- (With Spaces)"> - </option>
+      <option label="/">/</option>
+      <option label="/ (With Spaces)"> / </option>
+    </combobox>
+  </form>        
+  <code>$DATE_VARNAME = strftime($DATE_VARNAME,'%dDATE_SEPARATOR%mDATE_SEPARATOR%Y');</code>
+</doc>

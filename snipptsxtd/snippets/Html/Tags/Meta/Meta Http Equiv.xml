@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="METATAG_NAME" label="Name">content-type</textbox>    
+    <textbox name="METATAG_CONTENT" label="Content">text/html;charset=utf-8</textbox>    
+  </form>
+  
+  <code>&lt;meta http-equiv="METATAG_NAME" content="METATAG_CONTENT" /&gt;</code>
+
+</doc>

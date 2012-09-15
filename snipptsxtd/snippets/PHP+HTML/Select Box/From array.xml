@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="CHECKBOX_SELECTNAME" label="Select name"></textbox>    
+    <textbox name="CHECKBOX_ARRAYNAME" label="Array Name"></textbox>
+  </form>
+  
+  <code>&lt;select name="CHECKBOX_SELECTNAME"&gt;
+&lt;?php
+while(list($key, $val)=each($CHECKBOX_ARRAYNAME)) {
+	if (isset($CHECKBOX_SELECTNAME) &amp;&amp; ($CHECKBOX_SELECTNAME == $val)) {
+		echo '&lt;option value="'.$key.'" selected&gt;'.$val.'&lt;/option&gt;';
+	} else {
+		echo '&lt;option value="'.$key.'"&gt;'.$val.'&lt;/option&gt;';
+	}
+}
+?&gt;&lt;/select&gt;</code>
+
+</doc>

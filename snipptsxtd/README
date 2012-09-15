@@ -1,0 +1,96 @@
+DESCRIPTION
+
+Code Menu is a plugin that will display a menu/submenus allowing the user to insert code snippets in the geany editor. The user can create its own snippets by creating a specific xml file and depeding on how the xml is writed the plugin can display a dialog form to ask for user input data in order to complete the snippet.
+
+INSTALL: 
+
+apt-get install libgtk2.0-dev intltool 
+
+gcc -c plugin.c -fPIC `pkg-config --cflags geany` -I/usr/include/libxml2 &&  gcc plugin.o -o plugin.so -shared `pkg-config --libs geany` -lxml2
+
+copy the validation.xsd file and snippets folder to /etc/geany/snippetsmenu
+copy plugin.so to /usr/lib/x86_64-linux-gnu/geany/ (on a 64bit ubuntu)
+
+USAGE/INSTRUCTIONS:
+
+- The plugin is groing to search for snippets in the folder 'snippets' inside the plugin data directory of this plugin that is hardcoded in the 'plugin_data_dir' variable. 
+- It is possbible to change location of the data directory by modifying the variable, but make sure the folder 'snippets' and, the file wich is use to validate the xml file, 'validation.xsd' is present on this folder.
+- The plugin is going to create a menu/submenu for each forlder it finds and menu item for each xml file.
+
+- A basic xml requires the <doc> and <code> tags and the plugin will insert the content of the <code> tag on geany editor. 
+
+
+LIMITATIONS:
+
+- The directory for the validation.xsd valition file is hardcoded in the plugin_data_dir variable.
+- The directory for the snippets is 'snippets', must be inside the directory specified in the plugin_data_dir var. The folder name is specified in the snippet_dir variable. 
+- The '<' char must be replace with '&lt;' and '>' with '&gt;' in the xml files. 
+
+EXAMPLE - produces a simple html link:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+	<code>&lt;a href="http://www.google.com/"&gt;Google&lt;/a&gt;</code>
+</doc>
+
+- The plugin allows the use of the <form> tag that will display a form dialog that cause the plugin to replace text from the <code> tag with the inputed data, provided that the form element name is inside the <code> tag. The <textbox> and <combobox> can be used with the <form> tag. <combobox> has the optional 'label' parameter and will display text from that parameter on the form window but use the tag value to replace on <code> tag.
+
+EXAMPLE (WITH TEXTBOX) - produces a html meta tag:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="REFRESH_TIME" label="Refresh Time">5</textbox>    
+    <textbox name="DESTINATION_URL" label="Destination Url">http://www.google.pt</textbox>    
+  </form>
+  
+  <code>&lt;meta http-equiv="refresh" content="REFRESH_TIME; URL=DESTINATION_URL"&gt;</code>
+</doc>
+
+EXAMPLE (WITH TEXTBOX AND COMBOBOX) - produces a html form tag:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="FORM_ACTION" label="Action"></textbox>    
+    <combobox name="FORM_METHOD" label="Method">
+      <option label="Post">post</option>
+      <option label="Get">get</option>
+    </combobox>
+  </form>
+  
+  <code>&lt;form action="FORM_ACTION" method="FORM_METHOD"&gt;&lt;/form&gt;</code>
+</doc>
+
+- The plugin also allow the use of the <script> tag. When this tag is used, the plugin will run a script/program and capture its output and use it to replace text on the <code> tag. The plugin will also use the inputed data from previous dialog form elements as a the script parameters.
+
+EXAMPLE - produces a html table:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="TABL_COL" label="Number of Columns">3</textbox>    
+    <textbox name="TABL_ROW" label="Number of Rows">3</textbox>    
+    <script name="SCRIPT_OUTPUT">/etc/geany/codemenu/snippets/Html/Misc/generate_table</script>
+  </form>
+
+  <code>SCRIPT_OUTPUT</code>
+</doc>
+
+
+generate_table script:
+
+#!/bin/bash
+echo "<table>"
+for ((i=0; i<$1; i++ )) ; 
+    do
+    echo " <tr>"
+    for ((j=0; j<$2; j++ )) ;
+    do 
+       echo "  <td></td>"
+    done
+    echo " </tr>"
+done
+echo "</table>"
+ 
+

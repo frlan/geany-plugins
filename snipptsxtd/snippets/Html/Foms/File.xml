@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="FILE_NAME" label="File name"></textbox>    
+  </form>
+  
+  <code>&lt;input type="file" name="FILE_NAME" /&gt;</code>
+
+</doc>

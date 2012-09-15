@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="METATAG_NAME" label="Name">generator</textbox>    
+    <textbox name="METATAG_CONTENT" label="Content">Geany</textbox>    
+  </form>
+  
+  <code>&lt;meta name="METATAG_NAME" content="METATAG_CONTENT" /&gt;</code>
+
+</doc>

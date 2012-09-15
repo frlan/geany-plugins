@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <combobox name="DATE_SEPARATOR" label="Date Separator">
+      <option label="Space"> </option>        
+      <option label="-">-</option>
+      <option label="- (With Spaces)"> - </option>
+      <option label="/">/</option>
+      <option label="/ (With Spaces)"> / </option>
+    </combobox>
+  </form>    
+  <code>print date('%mDATE_SEPARATOR%dDATE_SEPARATOR%y');</code>
+</doc>

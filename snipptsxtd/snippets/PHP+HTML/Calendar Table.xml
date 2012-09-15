@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  
+<code>&lt;?php
+	$now = getdate(time());
+	$time = mktime(0,0,0, $now['mon'], 1, $now['year']);
+	$date = getdate($time);
+	$dayTotal = cal_days_in_month(0, $date['mon'], $date['year']);
+	//Print the calendar header with the month name.
+	print '&lt;table&gt;&lt;tr&gt;&lt;td colspan="7"&gt;&lt;strong&gt;' . $date['month'] . '&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;';
+	for ($i = 0; $i &lt; 6; $i++) {
+		print '&lt;tr&gt;';
+		for ($j = 1; $j &lt;= 7; $j++) {
+			$dayNum = $j + $i*7 - $date['wday'];
+			//Print a cell with the day number in it.  If it is today, highlight it.
+			print '&lt;td';
+			if ($dayNum &gt; 0 &amp;&amp; $dayNum &lt;= $dayTotal) {
+				print ($dayNum == $now['mday']) ? ' style="background: #ccc;"&gt;' : '&gt;';
+				print $dayNum;
+			}
+			else {
+				//Print a blank cell if no date falls on that day, but the row is unfinished.
+				print '&gt;';
+			}
+			print '&lt;/td&gt;';
+		}
+		print '&lt;/tr&gt;';
+		if ($dayNum &gt;= $dayTotal &amp;&amp; $i != 6)
+			break;
+	}
+	print '&lt;/table&gt;';
+?&gt;</code>
+</doc>

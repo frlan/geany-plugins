@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="STYLESHEET_FILE" label="Filename">style.css</textbox>    
+  </form>
+  
+  <code>&lt;link rel="stylesheet" href="STYLESHEET_FILE" type="text/css"&gt;</code>
+</doc>

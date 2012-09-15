@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="CHECKBOX_NAME" label="Name"></textbox>    
+    <textbox name="CHECKBOX_VALUE" label="Checked value"></textbox>    
+  </form>
+  
+  <code>&lt;input type="checkbox" name="CHECKBOX_NAME" value="CHECKBOX_VALUE" /&gt;</code>
+
+</doc>

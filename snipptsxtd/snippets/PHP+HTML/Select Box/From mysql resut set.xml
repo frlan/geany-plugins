@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="CHECKBOX_SELECTNAME" label="Select name"></textbox>    
+    <textbox name="CHECKBOX_QUERYRESULT" label="Query result"></textbox>
+    <textbox name="CHECKBOX_VALUEINDEX" label="Value index"></textbox>    
+    <textbox name="CHECKBOX_LABELINDEX" label="Label index"></textbox>
+  </form>
+  
+  <code>&lt;select name="CHECKBOX_SELECTNAME"&gt;
+&lt;?php
+while($row = mysql_fetch_row($CHECKBOX_QUERYRESULT)) {
+	if (isset($CHECKBOX_SELECTNAME) &amp;&amp; ($CHECKBOX_SELECTNAME == $row[CHECKBOX_VALUEINDEX])) {
+		echo '&lt;option value="'.$row[CHECKBOX_VALUEINDEX].'" selected&gt;'.$row[CHECKBOX_LABELINDEX].'&lt;/option&gt;';
+	} else {
+		echo '&lt;option value="'.$row[CHECKBOX_VALUEINDEX].'"&gt;'.$row[CHECKBOX_LABELINDEX].'&lt;/option&gt;';
+	}
+}
+?&gt;
+&lt;/select&gt;</code>
+
+</doc>

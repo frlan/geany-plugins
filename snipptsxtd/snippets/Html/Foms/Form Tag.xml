@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="FORM_ACTION" label="Action"></textbox>    
+    <combobox name="FORM_METHOD" label="Method">
+      <option label="Post">post</option>
+      <option label="Get">get</option>
+    </combobox>
+  </form>
+  
+  <code>&lt;form action="FORM_ACTION" method="FORM_METHOD"&gt;&lt;/form&gt;</code>
+
+</doc>

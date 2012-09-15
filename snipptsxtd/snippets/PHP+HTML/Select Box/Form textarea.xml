@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="CHECKBOX_TEXTAREA" label="Textarea name"></textbox>    
+  </form>
+  
+  <code>&lt;textarea name="CHECKBOX_TEXTAREA" rows="20" cols="40"&gt;&lt;?php if (isset($CHECKBOX_TEXTAREA)) { echo $CHECKBOX_TEXTAREA; } ?&gt;&lt;/textarea&gt;</code>
+
+</doc>

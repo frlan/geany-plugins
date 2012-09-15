@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="RADIO_NAME" label="Name"></textbox>    
+    <textbox name="RADIO_VALUE" label="Value"></textbox>    
+  </form>
+  
+  <code>&lt;input type="radio" name="RADIO_NAME" value="RADIO_VALUE" /&gt;</code>
+
+</doc>

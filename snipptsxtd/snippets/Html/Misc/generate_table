@@ -1,0 +1,12 @@
+#!/bin/bash
+echo "<table>"
+for ((i=0; i<$1; i++ )) ; 
+    do
+    echo " <tr>"
+    for ((j=0; j<$2; j++ )) ;
+    do 
+       echo "  <td></td>"
+    done
+    echo " </tr>"
+done
+echo "</table>"

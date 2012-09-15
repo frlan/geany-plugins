@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="CHECKBOX_TEXTINPUT" label="Text input name"></textbox>    
+  </form>
+  
+  <code>&lt;input type="text" name="CHECKBOX_TEXTINPUT" value="&lt;?php if (isset($CHECKBOX_TEXTINPUT)) { echo $CHECKBOX_TEXTINPUT; } ?&gt;"&gt;</code>
+
+</doc>

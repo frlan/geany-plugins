@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="CHECKBOX_INPUTNAME" label="Input name"></textbox>    
+    <textbox name="CHECKBOX_CHECKEDVALUE" label="Checked value"></textbox>    
+  </form>
+  
+  <code>&lt;input type="checkbox" name="CHECKBOX_INPUTNAME" value="checked" &lt;?php if (isset($CHECKBOX_CHECKEDVALUE)) { echo 'checked'; } ?&gt;&gt;</code>
+
+</doc>

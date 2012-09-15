@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="DATE_VARNAME" label="Variable Name"></textbox>  
+  </form>      
+  <code>$DATE_VARNAME = strftime(DATE_VARNAME,'%a, %d %b %Y');</code>
+</doc>

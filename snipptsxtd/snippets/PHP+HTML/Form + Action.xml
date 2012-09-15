@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+  <form>
+    <textbox name="SUBMIT_TEXT" label="Submit button text"></textbox>    
+  </form>
+  
+<code>&lt;form method="POST" action="&lt;?php if (isset($submitted)) {
+//form submit code here
+} else { ?&gt;
+&lt;form method="POST" action="&lt;?php echo $SCRIPT_NAME ?&gt;">
+
+&lt;input type="submit" name="submitted" value="aaa">&lt;/form&gt;
+&lt;?php } // end of form ?&gt;&lt;?php echo $SCRIPT_NAME ?&gt;"&gt;
+
+&lt;/form&gt;</code>
+
+</doc>

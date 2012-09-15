@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+
+<code>&lt;form action="&lt;?php echo $SCRIPT_NAME ?&gt;" method="POST"&gt;
+  
+&lt;/form&gt;</code>
+
+</doc>
