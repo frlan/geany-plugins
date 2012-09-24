@@ -106,6 +106,10 @@ if ENABLE_SHIFTCOLUMN
 SUBDIRS += shiftcolumn
 endif
 
+if ENABLE_SNIPPETSMENU
+SUBDIRS += snippetsmenu
+endif
+
 if ENABLE_SPELLCHECK
 SUBDIRS += spellcheck
 endif
