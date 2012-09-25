@@ -50,7 +50,7 @@ GtkWidget *vbox;
 GtkWidget *menubar = NULL;
 
 PLUGIN_VERSION_CHECK(147)
-PLUGIN_SET_INFO(_("Code Menu"), _("Snippets Menu."), "0.2" , _("Marco Constâncio"))
+PLUGIN_SET_INFO(_("Snippets Menu"), _("Snippets Menu."), "0.2" , _("Marco Constâncio"))
 
 /* UI */
 static GtkWidget *main_menu_item;
