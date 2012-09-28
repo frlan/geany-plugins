@@ -108,7 +108,7 @@ static void generate_generic_toolbar() {
 	  gtk_box_reorder_child(GTK_BOX(vbox),menubar,2); 
 	  
       menu_widget  = read_code_folder( g_build_filename(plugin_data_dir,snippet_dir, NULL) , 0);
-	  gtk_widget_show_all(window);
+	  gtk_widget_show_all(menubar);
 	}	
 }
 
