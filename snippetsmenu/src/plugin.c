@@ -45,34 +45,27 @@ GeanyPlugin *geany_plugin;
 GeanyData *geany_data;
 GeanyFunctions *geany_functions;
 
-GtkWidget *window;
-GtkWidget *vbox;
-GtkWidget *menubar = NULL;
-
 PLUGIN_VERSION_CHECK(147)
 PLUGIN_SET_INFO(_("Snippets Menu"), _("Snippets Menu."), "0.2" , _("Marco Constâncio"))
 
 /* UI */
-static GtkWidget *main_menu_item;
-static GtkToolItem *glatex_wizard_generic_toolbar_item = NULL;
+static GtkWidget *menubar = NULL;
 
 static void generate_generic_toolbar(void);
 static GtkWidget *add_dialog_input_widgets(GtkWidget *, GtkWidget *, const xmlChar *, xmlDoc *, xmlNode *);
 
 /* CODE, ACTIONS */
-GHashTable *file_locations;
-GDir *top_snippet_dir;
-const gchar *plugin_data_dir = "/etc/geany/snippetsmenu";
+static GHashTable *file_locations;
+static const gchar *plugin_data_dir = "/etc/geany/snippetsmenu";
 
-GtkWidget *read_code_folder(const gchar *, gint);
+static GtkWidget *read_code_folder(const gchar *, gint);
 static void code_action(gchar *);
-char *run_external_script (const char *, const char *);
-
+static char *run_external_script (const char *, const char *);
 static void insert_code(GeanyDocument *, const gchar *);
 
 /* Util */
-char *str_replace(const char *, const char *, const char *);
-char *str_append(const char *, const char *, const char *);
+static char *str_replace(const char *, const char *, const char *);
+static char *str_append(const char *, const char *, const char *);
 static void msgbox(gchar *);
 
 /* Add toolbar, created hashtable to be used to store filenames and file path */
@@ -88,31 +81,24 @@ void plugin_cleanup(void){
   if (menubar != NULL){
     gtk_widget_destroy(menubar);
   }
-  if (glatex_wizard_generic_toolbar_item != NULL){
-    g_free(glatex_wizard_generic_toolbar_item);
-  }
 }
 
 static void generate_generic_toolbar(){
-  GtkWidget *menu_widget;
+  GtkWidget *vbox;
   const gchar *snippet_dir = "snippets/";
 
-  if (glatex_wizard_generic_toolbar_item == NULL){
-    window = geany->main_widgets->window;
+  menubar = gtk_menu_bar_new();
+  vbox = ui_lookup_widget(geany->main_widgets->window, "vbox1");
+  gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 3);
+  gtk_box_reorder_child(GTK_BOX(vbox),menubar, 2);
 
-    menubar = gtk_menu_bar_new();
-    vbox = ui_lookup_widget(geany->main_widgets->window, "vbox1");
-    gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 3);
-    gtk_box_reorder_child(GTK_BOX(vbox),menubar, 2);
-
-    menu_widget = read_code_folder( g_build_filename(plugin_data_dir,snippet_dir, NULL) , 0);
-    gtk_widget_show_all(menubar);
-  }
+  read_code_folder( g_build_filename(plugin_data_dir,snippet_dir, NULL) , 0);
+  gtk_widget_show_all(menubar);
 }
 
 /* Recursive that reads code folder and its subfolders. records filenames
  * and path to hashtable for easier later access */
-GtkWidget *read_code_folder(const gchar *path, gint depth){
+static GtkWidget *read_code_folder(const gchar *path, gint depth){
   GDir *dir;
   const gchar *filename;
   char *filename_ext;
@@ -166,170 +152,180 @@ GtkWidget *read_code_folder(const gchar *path, gint depth){
 /* Reads data from xml code file, generate form dialog, insert code to geany document  */
 static void code_action(gchar *file){
   char *file_path = g_hash_table_lookup(file_locations, file);
-  int j = 0;
   char *script_param = "";
 
   /* Geany Document */
-  GeanyDocument *geany_doc = NULL;
-  geany_doc = document_get_current();
+  GeanyDocument *geany_doc;
 
   /* Xml Reading */
-  xmlDoc *xml_doc = xmlParseFile(file_path);
-  xmlNode *cur;
-  xmlXPathContext *xpathCtx = xmlXPathNewContext(xml_doc);
+  xmlDoc *xml_doc;
+  xmlXPathContext *xpathContext;
 
   /* Xml Validation - valid xml */
-  xmlSchemaParserCtxtPtr ctxt = xmlSchemaNewParserCtxt(g_strconcat(plugin_data_dir,"validation.xsd", NULL));
-  xmlSchemaSetParserErrors(ctxt, (xmlSchemaValidityErrorFunc) fprintf, (xmlSchemaValidityWarningFunc) fprintf, stderr);
-  xmlSchemaPtr schema = xmlSchemaParse(ctxt);
-  xmlSchemaFreeParserCtxt(ctxt);
+  xmlSchemaParserCtxtPtr parserContext;
+  xmlSchemaPtr schema;
 
-  if(xml_doc != NULL){
-    /* Xml Validation - validation against the xsd file */
-    xmlSchemaValidCtxtPtr ctxt = xmlSchemaNewValidCtxt(schema);
-    xmlSchemaSetValidErrors(ctxt, (xmlSchemaValidityErrorFunc) fprintf, (xmlSchemaValidityWarningFunc) fprintf, stderr);
-    int validation_result = xmlSchemaValidateDoc(ctxt, xml_doc);
+  /* Xml Validation - validation against the xsd file */
+  xmlSchemaValidCtxtPtr validationContext;
+  int validation_result;
 
-    /* Check if the xsd validation is to be ignore */
-    if(USE_XSD_VALIDATION != 1){
-      validation_result=0;
+  geany_doc = document_get_current();
+  if (geany_doc = NULL){
+    return;
+  }
+
+  xml_doc = xmlParseFile(file_path);
+  if(xml_doc == NULL){
+    return;
+  }
+  xpathContext = xmlXPathNewContext(xml_doc);
+
+  parserContext = xmlSchemaNewParserCtxt(g_strconcat(plugin_data_dir,"validation.xsd", NULL));
+  xmlSchemaSetParserErrors(parserContext, (xmlSchemaValidityErrorFunc) fprintf, (xmlSchemaValidityWarningFunc) fprintf, stderr);
+  schema = xmlSchemaParse(parserContext);
+  xmlSchemaFreeParserCtxt(parserContext);
+
+  validationContext = xmlSchemaNewValidCtxt(schema);
+  xmlSchemaSetValidErrors(validationContext, (xmlSchemaValidityErrorFunc) fprintf, (xmlSchemaValidityWarningFunc) fprintf, stderr);
+  validation_result = xmlSchemaValidateDoc(validationContext, xml_doc);
+
+  /* Check if the xsd validation is to be ignore */
+  if (USE_XSD_VALIDATION != 1){
+    validation_result = 0;
+  }
+
+  if (validation_result == 0){
+    /* Code Node */
+    xmlXPathObject * xpathObj_code = xmlXPathEvalExpression((xmlChar*)"/doc/code", xpathContext);
+    xmlNode *node_code = xpathObj_code->nodesetval->nodeTab[0];
+    gchar *code_content = xmlNodeGetContent(node_code);
+
+    xmlXPathObject * xpathObj_form = xmlXPathEvalExpression((xmlChar*)"/doc/form", xpathContext);
+    if(xmlXPathNodeSetIsEmpty(xpathObj_form->nodesetval)){
+      /* NO FORM FIELD */
+      insert_code(geany_doc,code_content);
     }
+    else{
+      /* Initialiaze form dialog */
+      gint form_dialog_result, chid_id = 0, num_fields = 0;
 
-    if (validation_result == 0){
-      /* Code Node */
-      xmlXPathObject * xpathObj_code = xmlXPathEvalExpression((xmlChar*)"/doc/code", xpathCtx);
-      xmlNode *node_code = xpathObj_code->nodesetval->nodeTab[0];
-      gchar *code_content = xmlNodeGetContent(node_code);
-      gchar *form_action;
+      GtkWidget *form_dialog, *vbox;
+      xmlNode *node_form = xpathObj_form->nodesetval->nodeTab[0], *field_node;
 
-      xmlXPathObject * xpathObj_form = xmlXPathEvalExpression((xmlChar*)"/doc/form", xpathCtx);
-      if(xmlXPathNodeSetIsEmpty(xpathObj_form->nodesetval)){
-        /* NO FORM FIELD */
-        insert_code(geany_doc,code_content);
+      form_dialog = gtk_dialog_new_with_buttons("Form Options",
+                    GTK_WINDOW(geany->main_widgets->window), GTK_DIALOG_DESTROY_WITH_PARENT,
+                    GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                    GTK_STOCK_OK, GTK_RESPONSE_OK,
+                    NULL);
+      vbox = ui_dialog_vbox_new(GTK_DIALOG(form_dialog));
+      gtk_box_set_spacing(GTK_BOX(vbox), 6);
+
+      field_node = node_form->xmlChildrenNode;
+      GtkWidget *form_fields[xmlChildElementCount(node_form)];
+
+      /* First xml read, generates form_fields ands store widgets data to array */
+      while (field_node != NULL){
+        if ((!xmlStrcmp(field_node->name, (const xmlChar *)"textbox")) ||
+          (!xmlStrcmp(field_node->name, (const xmlChar *)"combobox"))){
+
+          form_fields[chid_id] = add_dialog_input_widgets(form_dialog, vbox, field_node->name, xml_doc, field_node);
+
+          gtk_container_add(GTK_CONTAINER(vbox), form_fields[chid_id]);
+          num_fields++;
+        }
+        chid_id++;
+        field_node = field_node->next;
       }
-      else{
-        /* Initialiaze form dialog */
-        gint form_dialog_result, chid_id = 0, num_fields = 0;
+      /* Doesn't show dialog when no form fields there is a form tag but no form field tags*/
+      if (num_fields > 0){
+        gtk_dialog_set_default_response(GTK_DIALOG(form_dialog), GTK_RESPONSE_OK);
 
-        GtkWidget *form_dialog, *vbox;
-        xmlNode *node_form = xpathObj_form->nodesetval->nodeTab[0], *field_node;
+        gtk_widget_show_all(form_dialog);
+        form_dialog_result = gtk_dialog_run(GTK_DIALOG (form_dialog));
+      }
 
-        form_dialog = gtk_dialog_new_with_buttons("Form Options",
-                      GTK_WINDOW(geany->main_widgets->window), GTK_DIALOG_DESTROY_WITH_PARENT,
-                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                      GTK_STOCK_OK, GTK_RESPONSE_OK,
-                      NULL);
-        vbox = ui_dialog_vbox_new(GTK_DIALOG(form_dialog));
-        gtk_box_set_spacing(GTK_BOX(vbox), 6);
-
+      if (form_dialog_result == GTK_RESPONSE_OK || num_fields == 0){
+        chid_id = 0;
         field_node = node_form->xmlChildrenNode;
-        GtkWidget *form_fields[xmlChildElementCount(node_form)];
 
-        /* First xml read, generates form_fields ands store widgets data to array */
+        /* Check response from dialog, replace field name with response from dialog or script output*/
         while (field_node != NULL){
-          if ((!xmlStrcmp(field_node->name, (const xmlChar *)"textbox")) ||
-            (!xmlStrcmp(field_node->name, (const xmlChar *)"combobox"))){
+          if ((!xmlStrcmp(field_node->name, (const xmlChar *)"textbox"))){
+            script_param = g_strconcat(script_param, " ",gtk_entry_get_text(GTK_ENTRY(form_fields[chid_id])), NULL);
 
-            form_fields[chid_id] = add_dialog_input_widgets(form_dialog, vbox, field_node->name, xml_doc, field_node);
+            code_content = str_replace(code_content,
+                           g_strdup(xmlGetProp(field_node, "name")),
+                           gtk_entry_get_text(GTK_ENTRY (form_fields[chid_id])));
+          }
+          else if ((!xmlStrcmp(field_node->name, (const xmlChar *)"combobox"))){
+            const gchar *active_cb_node = gtk_combo_box_get_active_text(GTK_COMBO_BOX(form_fields[chid_id]));
 
-            gtk_container_add(GTK_CONTAINER(vbox), form_fields[chid_id]);
-            num_fields++;
+            /* Append option to script_param for later use when necessary */
+            if (active_cb_node != NULL){
+              script_param = str_append(script_param,active_cb_node," ");
+            }
+
+            /* No option selected, replaces fieldname with empty string */
+            if (active_cb_node == NULL){
+              code_content = str_replace(code_content,
+                             g_strdup(xmlGetProp(field_node,"name")),
+                             "");
+            }else{
+              xmlNode *selected_cb_node = field_node->xmlChildrenNode;
+              const gchar *cb_label = "";
+
+              while (selected_cb_node != NULL){
+                /* gets value from value/label from combobox*/
+                cb_label = g_strdup(xmlGetProp(selected_cb_node,"label"));
+                if (cb_label == NULL){
+                  cb_label = xmlNodeListGetString(xml_doc, selected_cb_node->xmlChildrenNode, 1);
+                }
+
+                if ((!xmlStrcmp(selected_cb_node->name, (const xmlChar *)"option")) &&
+                  (!xmlStrcmp(cb_label, active_cb_node))){
+
+                  code_content = str_replace(code_content,
+                                 g_strdup(xmlGetProp(field_node,"name")),
+                                 xmlNodeListGetString(xml_doc, selected_cb_node->xmlChildrenNode, 1));
+                  break;
+                }
+                selected_cb_node = selected_cb_node->next;
+              }
+            }
+          }
+          else if ((!xmlStrcmp(field_node->name, (const xmlChar *)"script"))){
+            /* Gets output from script */
+            xmlChar *script_name = xmlNodeListGetString(xml_doc, field_node->xmlChildrenNode, 1);
+
+            code_content = str_replace(code_content,
+                           g_strdup(xmlGetProp(field_node,"name")),
+                           run_external_script(script_name,script_param));
+            xmlFree(script_name);
           }
           chid_id++;
           field_node = field_node->next;
         }
-        /* Doesn't show dialog when no form fields there is a form tag but no form field tags*/
-        if (num_fields > 0){
-          gtk_dialog_set_default_response(GTK_DIALOG(form_dialog), GTK_RESPONSE_OK);
-
-          gtk_widget_show_all(form_dialog);
-          form_dialog_result = gtk_dialog_run(GTK_DIALOG (form_dialog));
-        }
-
-        if (form_dialog_result == GTK_RESPONSE_OK || num_fields == 0){
-          chid_id = 0;
-          field_node = node_form->xmlChildrenNode;
-
-          /* Check response from dialog, replace field name with response from dialog or script output*/
-          while (field_node != NULL){
-            if ((!xmlStrcmp(field_node->name, (const xmlChar *)"textbox"))){
-              script_param = g_strconcat(script_param, " ",gtk_entry_get_text(GTK_ENTRY(form_fields[chid_id])), NULL);
-
-              code_content = str_replace(code_content,
-                             g_strdup(xmlGetProp(field_node, "name")),
-                             gtk_entry_get_text(GTK_ENTRY (form_fields[chid_id])));
-
-            }
-            else if ((!xmlStrcmp(field_node->name, (const xmlChar *)"combobox"))){
-              const gchar *active_cb_node = gtk_combo_box_get_active_text(GTK_COMBO_BOX(form_fields[chid_id]));
-
-              /* Append option to script_param for later use when necessary */
-              if (active_cb_node != NULL){
-                script_param = str_append(script_param,active_cb_node," ");
-              }
-
-              /* No option selected, replaces fieldname with empty string */
-              if (active_cb_node == NULL){
-                code_content = str_replace(code_content,
-                               g_strdup(xmlGetProp(field_node,"name")),
-                               "");
-              }else{
-                xmlNode *selected_cb_node = field_node->xmlChildrenNode;
-                const gchar *cb_label = "";
-
-                while (selected_cb_node != NULL){
-                  /* gets value from value/label from combobox*/
-                  cb_label = g_strdup(xmlGetProp(selected_cb_node,"label"));
-                  if (cb_label == NULL){
-                    cb_label = xmlNodeListGetString(xml_doc, selected_cb_node->xmlChildrenNode, 1);
-                  }
-
-                  if ((!xmlStrcmp(selected_cb_node->name, (const xmlChar *)"option")) &&
-                    (!xmlStrcmp(cb_label, active_cb_node))){
-
-                    code_content = str_replace(code_content,
-                                   g_strdup(xmlGetProp(field_node,"name")),
-                                   xmlNodeListGetString(xml_doc, selected_cb_node->xmlChildrenNode, 1));
-                    break;
-                  }
-                  selected_cb_node = selected_cb_node->next;
-                }
-              }
-            }
-            else if ((!xmlStrcmp(field_node->name, (const xmlChar *)"script"))){
-              /* Gets output from script */
-              xmlChar *script_name = xmlNodeListGetString(xml_doc, field_node->xmlChildrenNode, 1);
-
-              code_content = str_replace(code_content,
-                             g_strdup(xmlGetProp(field_node,"name")),
-                             run_external_script(script_name,script_param));
-              xmlFree(script_name);
-            }
-            chid_id++;
-            field_node = field_node->next;
-          }
-          insert_code(geany_doc,code_content);
-        }
-        else{
-          /* USER PRESSED CANCEL/CLOSED DIALOG BOX*/
-        }
-        gtk_widget_destroy(form_dialog);
+        insert_code(geany_doc, code_content);
       }
+      else{
+        /* USER PRESSED CANCEL/CLOSED DIALOG BOX*/
+      }
+      gtk_widget_destroy(form_dialog);
     }
-    else if (validation_result > 0){
-      msgbox("This code file is not valid. Checks its content.");
-    }
-    else{
-      msgbox("This code file validation generated an internal error.");
-    }
+  }
+  else if (validation_result > 0){
+    msgbox("This code file is not valid. Checks its content.");
+  }
+  else{
+    msgbox("This code file validation generated an internal error.");
   }
 }
 
 /* Adds widgets to form dialog */
 static GtkWidget *add_dialog_input_widgets(GtkWidget *dialog, GtkWidget *vbox, const xmlChar *type, xmlDoc *xml_doc, xmlNode *node){
   GtkWidget *entry = NULL;
-
-  const gchar *label_text = g_strdup(xmlGetProp(node,"label"));
+  const gchar *label_text = g_strdup(xmlGetProp(node, "label"));
+  const gchar *default_text = xmlNodeListGetString(xml_doc, node->xmlChildrenNode, 1);
 
   if (label_text){
     GtkWidget *label = gtk_label_new(label_text);
@@ -337,8 +333,6 @@ static GtkWidget *add_dialog_input_widgets(GtkWidget *dialog, GtkWidget *vbox, c
     gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
     gtk_container_add(GTK_CONTAINER(vbox), label);
   }
-
-  const gchar *default_text = xmlNodeListGetString(xml_doc, node->xmlChildrenNode, 1);
 
   if (!xmlStrcmp(type, (const xmlChar *)"textbox")){
     entry = gtk_entry_new();
@@ -352,10 +346,10 @@ static GtkWidget *add_dialog_input_widgets(GtkWidget *dialog, GtkWidget *vbox, c
     gtk_entry_set_width_chars(GTK_ENTRY(entry), 30);
   }
   else if (!xmlStrcmp(type, (const xmlChar *)"combobox")){
-    entry = gtk_combo_box_new_text();
     xmlNode *combo_node = node->xmlChildrenNode;
     const gchar *cb_label = "";
 
+    entry = gtk_combo_box_new_text();
     while (combo_node != NULL){
       if ((!xmlStrcmp(combo_node->name, (const xmlChar *)"option"))) {
         cb_label = g_strdup(xmlGetProp(combo_node,"label"));
@@ -376,27 +370,25 @@ static GtkWidget *add_dialog_input_widgets(GtkWidget *dialog, GtkWidget *vbox, c
 
 /* Inserts code field (already processed) to the geany document */
 static void insert_code(GeanyDocument *doc, const gchar *string){
-  if (doc != NULL){
-    gint pos = sci_get_current_position(doc->editor->sci);
-    sci_insert_text(doc->editor->sci, pos, string);
-  }
+  gint pos = sci_get_current_position(doc->editor->sci);
+  sci_insert_text(doc->editor->sci, pos, string);
 }
 
-char *run_external_script(const char *script_location, const char *param){
-  FILE *file = popen(g_strconcat(script_location," ",param,NULL), "r");
-
-  char *output = realloc(NULL, strlen("")+1);
-  strcpy(output, "");
-
+static char *run_external_script(const char *script_location, const char *param){
+  FILE *file;
+  char *output;
   char buffer[512];
 
-  if(file == NULL){
+  output = realloc(NULL, 1);
+  output[0] = '\0';
+
+  file = popen(g_strconcat(script_location, " ", param, NULL), "r");
+  if (file == NULL){
     msgbox("Error opening script file.");
-    output = "";
   }else{
     while (fgets(buffer, sizeof(buffer)-1, file) != NULL) {
-      output = realloc(output,(strlen(output) + strlen(buffer)+1));
-      strcat(output,buffer);
+      output = realloc(output, (strlen(output) + strlen(buffer) + 1));
+      strcat(output, buffer);
     }
     pclose(file);
   }
@@ -408,7 +400,7 @@ char *run_external_script(const char *script_location, const char *param){
 
 static void msgbox(gchar *data){
   GtkWidget *dialog;
-  dialog = gtk_message_dialog_new(GTK_WINDOW(window),
+  dialog = gtk_message_dialog_new(GTK_WINDOW(geany->main_widgets->window),
            GTK_DIALOG_DESTROY_WITH_PARENT,
            GTK_MESSAGE_INFO,
            GTK_BUTTONS_OK,
@@ -418,7 +410,7 @@ static void msgbox(gchar *data){
   gtk_widget_destroy(dialog);
 }
 
-char *str_replace(const char *string, const char *substr, const char *replacement){
+static char *str_replace(const char *string, const char *substr, const char *replacement){
   char *tok = NULL;
   char *newstr = NULL;
   char *oldstr = NULL;
@@ -445,7 +437,7 @@ char *str_replace(const char *string, const char *substr, const char *replacemen
   return newstr;
 }
 
-char *str_append(const char *string1, const char *string2, const char *separator){
+static char *str_append(const char *string1, const char *string2, const char *separator){
   char *result;
 
   if (string1 == NULL || string2 == NULL){
