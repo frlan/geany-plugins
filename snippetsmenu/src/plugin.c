@@ -21,7 +21,7 @@
  * 
  */
 #define LIBXML_SCHEMAS_ENABLED
-#define USE_XSD_VALIDATION 1
+#define USE_XSD_VALIDATION 0
 
 #include "geanyplugin.h"
 #include "Scintilla.h"
