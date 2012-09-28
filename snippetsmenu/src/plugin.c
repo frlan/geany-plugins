@@ -65,7 +65,6 @@ static void insert_code(GeanyDocument *, const gchar *);
 
 /* Util */
 static char *str_replace(const char *, const char *, const char *);
-static char *str_append(const char *, const char *, const char *);
 static void msgbox(gchar *);
 
 /* Add toolbar, created hashtable to be used to store filenames and file path */
@@ -251,7 +250,7 @@ static void code_action(gchar *file){
         /* Check response from dialog, replace field name with response from dialog or script output*/
         while (field_node != NULL){
           if ((!xmlStrcmp(field_node->name, (const xmlChar *)"textbox"))){
-            script_param = g_strconcat(script_param, " ",gtk_entry_get_text(GTK_ENTRY(form_fields[chid_id])), NULL);
+            script_param = g_strconcat(script_param, " ", gtk_entry_get_text(GTK_ENTRY(form_fields[chid_id])), NULL);
 
             code_content = str_replace(code_content,
                            g_strdup(xmlGetProp(field_node, "name")),
@@ -262,7 +261,7 @@ static void code_action(gchar *file){
 
             /* Append option to script_param for later use when necessary */
             if (active_cb_node != NULL){
-              script_param = str_append(script_param,active_cb_node," ");
+              script_param = g_strconcat(script_param, active_cb_node, " ", NULL);
             }
 
             /* No option selected, replaces fieldname with empty string */
@@ -435,22 +434,6 @@ static char *str_replace(const char *string, const char *substr, const char *rep
     free(oldstr);
   }
   return newstr;
-}
-
-static char *str_append(const char *string1, const char *string2, const char *separator){
-  char *result;
-
-  if (string1 == NULL || string2 == NULL){
-    return NULL;
-  }
-  if (separator == NULL){
-    separator = " ";
-  }
-  result = malloc(strlen(string1) + strlen(string2) + strlen(separator));
-  strcpy(result, string1);
-  strcat(result, separator);
-  strcat(result, string2);
-  return result;
 }
 
 /*
