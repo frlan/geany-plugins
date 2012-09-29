@@ -57,11 +57,12 @@ static void generate_generic_toolbar(void);
 static GtkWidget *add_dialog_input_widgets(GtkWidget *, GtkWidget *, const xmlChar *, xmlDoc *, xmlNode *);
 
 /* CODE, ACTIONS */
-static GHashTable *file_locations;
+static GHashTable *html_snippets;
+static GHashTable *xml_snippets;
 static const gchar *plugin_data_dir = "/etc/geany/snippetsmenu";
 static const gchar *snippet_dir = "snippets/";
 
-static GtkWidget *read_code_folder(const gchar *, gint);
+static GtkWidget *read_code_folder(const gchar *, gint, GHashTable *);
 static gboolean editor_notify_cb(GObject *object, GeanyEditor *editor, SCNotification *nt, gpointer data);
 static void code_action(gchar *);
 static gchar *get_code_content(gchar *file);
@@ -82,13 +83,17 @@ PluginCallback plugin_callbacks[] =
 
 /* Add toolbar, created hashtable to be used to store filenames and file path */
 void plugin_init(GeanyData *data){
-  file_locations = g_hash_table_new(g_str_hash, g_str_equal);
+  html_snippets = g_hash_table_new(g_str_hash, g_str_equal);
+  xml_snippets = g_hash_table_new(g_str_hash, g_str_equal);
   generate_generic_toolbar();
 }
 
 void plugin_cleanup(void){
-  if (file_locations != NULL){
-    g_hash_table_destroy(file_locations);
+  if (html_snippets != NULL){
+    g_hash_table_destroy(html_snippets);
+  }
+  if (xml_snippets != NULL){
+    g_hash_table_destroy(xml_snippets);
   }
   if (menubar != NULL){
     gtk_widget_destroy(menubar);
@@ -103,13 +108,13 @@ static void generate_generic_toolbar(){
   gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 3);
   gtk_box_reorder_child(GTK_BOX(vbox),menubar, 2);
 
-  read_code_folder("", 0);
+  read_code_folder("", 0, NULL);
   gtk_widget_show_all(menubar);
 }
 
 /* Recursive that reads code folder and its subfolders. records filenames
  * and path to hashtable for easier later access */
-static GtkWidget *read_code_folder(const gchar *path, gint depth){
+static GtkWidget *read_code_folder(const gchar *path, gint depth, GHashTable *snippets_hash){
   GDir *dir;
   gchar *full_path;
   const gchar *filename;
@@ -130,8 +135,16 @@ static GtkWidget *read_code_folder(const gchar *path, gint depth){
 
       item = gtk_menu_item_new_with_label(g_strdup(filename));
 
+      if (depth == 0){
+        if (strcasecmp(filename, "html") == 0){
+          snippets_hash = html_snippets;
+        }else if (strcasecmp(filename, "xml") == 0){
+          snippets_hash = xml_snippets;
+        }
+      }
+
       new_path = g_build_filename(path, filename, NULL);
-      submenu = read_code_folder(new_path, depth + 1);
+      submenu = read_code_folder(new_path, depth + 1, snippets_hash);
       gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), submenu);
       g_free(new_path);
 
@@ -144,15 +157,11 @@ static GtkWidget *read_code_folder(const gchar *path, gint depth){
     else if (g_file_test(file_fullpath, G_FILE_TEST_IS_REGULAR)){
       filename_ext = strrchr(filename, '.');
       if (filename_ext && strcasecmp(filename_ext, ".xml") == 0){
-
         gchar *file_basename = str_replace(filename, ".xml", "");
 
-        const gchar * slash = strchr(path, '/');
-        gchar *temp1 = slash ? g_strndup(path, slash - path) : g_strdup(path);
-        gchar *temp2 = g_ascii_strdown(temp1, -1);
-        gchar *file_path = g_build_filename(temp2, file_basename, NULL);
-
-        g_hash_table_insert(file_locations, file_path, file_fullpath);
+        if (snippets_hash != NULL){
+          g_hash_table_insert(snippets_hash, g_ascii_strdown(file_basename, -1), g_strdup(file_fullpath));
+        }
 
         item = gtk_menu_item_new_with_label(file_basename);
         if(depth == 0){
@@ -160,10 +169,7 @@ static GtkWidget *read_code_folder(const gchar *path, gint depth){
         }else{
           gtk_container_add(GTK_CONTAINER(menu), item);
         }
-        g_signal_connect_swapped(G_OBJECT(item), "activate", G_CALLBACK(code_action), (gpointer)g_strdup(file_path));
-
-        g_free(temp1);
-        g_free(temp2);
+        g_signal_connect_swapped(G_OBJECT(item), "activate", G_CALLBACK(code_action), file_fullpath);
         file_fullpath = NULL;
       }
     }
@@ -183,8 +189,8 @@ static GtkWidget *read_code_folder(const gchar *path, gint depth){
 static gboolean editor_notify_cb(GObject *object, GeanyEditor *editor, SCNotification *nt, gpointer data){
   gint lexer, pos, style, end;
   gchar c;
-  const gchar *snippet_subdir;
-  gchar *tagname, *file_location, *code_content;
+  GHashTable *snippets_hash;
+  gchar *tagname, *temp, *file_path, *code_content;
 
   if (nt->nmhdr.code != SCN_CHARADDED || nt->ch != '>'){
     return FALSE;
@@ -192,9 +198,9 @@ static gboolean editor_notify_cb(GObject *object, GeanyEditor *editor, SCNotific
 
   lexer = sci_get_lexer(editor->sci);
   if (lexer == SCLEX_XML){
-    snippet_subdir = "xml/";
+    snippets_hash = xml_snippets;
   }else if (lexer == SCLEX_HTML){
-    snippet_subdir = "html/";
+    snippets_hash = html_snippets;
   }else{
     return FALSE;
   }
@@ -218,11 +224,16 @@ static gboolean editor_notify_cb(GObject *object, GeanyEditor *editor, SCNotific
   pos++;
 
   tagname = sci_get_contents_range(editor->sci, pos, end + 1);
-  file_location = g_strconcat(snippet_subdir, tagname, NULL);
+  temp = g_ascii_strdown(tagname, -1);
+  file_path = g_hash_table_lookup(snippets_hash, temp);
   g_free(tagname);
+  g_free(temp);
+  if (file_path == NULL){
+    return FALSE;
+  }
 
-  code_content = get_code_content(file_location);
-  g_free(file_location);
+  code_content = get_code_content(file_path);
+  g_free(file_path);
   if (code_content == NULL){
     return FALSE;
   }
@@ -238,7 +249,7 @@ static gboolean editor_notify_cb(GObject *object, GeanyEditor *editor, SCNotific
 }
 
 /* Reads data from xml code file, generate form dialog, insert code to geany document */
-static void code_action(gchar *file){
+static void code_action(gchar *file_path){
   GeanyDocument *geany_doc;
   gchar *code_content;
 
@@ -247,7 +258,7 @@ static void code_action(gchar *file){
     return;
   }
 
-  code_content = get_code_content(file);
+  code_content = get_code_content(file_path);
   if (code_content == NULL){
     return;
   }
@@ -256,8 +267,7 @@ static void code_action(gchar *file){
 }
 
 /* Reads data from xml code file, generate form dialog, get code to insert */
-static gchar *get_code_content(gchar *file){
-  char *file_path = g_hash_table_lookup(file_locations, file);
+static gchar *get_code_content(gchar *file_path){
   char *script_param = "";
   gchar *code_content = NULL;
 
