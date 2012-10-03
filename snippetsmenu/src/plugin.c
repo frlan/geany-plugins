@@ -35,13 +35,6 @@
 #include <libxml/xpath.h>
 #include <string.h>
 
-/*
-INSTALL:
-   libxml2-dev
-RUN TO COMPILE:
-   gcc -c plugin.c -fPIC `pkg-config --cflags geany` -I/usr/include/libxml2 &&  gcc plugin.o -o plugin.so -shared `pkg-config --libs geany` -lxml2
-*/
-
 /* GEANY SPECIFIC */
 GeanyPlugin *geany_plugin;
 GeanyData *geany_data;

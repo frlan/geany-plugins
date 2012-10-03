@@ -10,5 +10,6 @@ AC_DEFUN([GP_CHECK_SNIPPETSMENU],
     AC_CONFIG_FILES([
         snippetsmenu/Makefile
         snippetsmenu/src/Makefile
+        snippetsmenu/snippets/Makefile
     ])
 ])
