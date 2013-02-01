@@ -46,6 +46,9 @@ typedef struct {
 	const gchar *start;
 	const gchar *header_start;
 	const gchar *header_stop;
+	const gchar *header_linestart;
+	const gchar *header_linesplit;
+	const gchar *header_columnsplit;
 	const gchar *body_start;
 	const gchar *body_end;
 	const gchar *columnsplit;
@@ -58,7 +61,8 @@ typedef struct {
 enum {
 	TC_LATEX = 0,
 	TC_HTML,
-	TC_SQL
+	TC_SQL,
+	TC_DOKUWIKI
 };
 
 
@@ -67,6 +71,9 @@ TableConvertRule tablerules[] = {
 	{
 		N_("LaTeX"),
 		"\\begin{table}[h]\n\\begin{tabular}{}\n",
+		"",
+		"",
+		"",
 		"",
 		"",
 		"",
@@ -83,6 +90,9 @@ TableConvertRule tablerules[] = {
 		"<table>\n",
 		"<thead>\n",
 		"</thead>\n",
+		"<tr>\n\t<td>",
+		"<\td><\tr>",
+		"</td>\n<td>",
 		"<tbody>\n",
 		"\n</tbody>",
 		"</td>\n\t<td>",
@@ -99,11 +109,31 @@ TableConvertRule tablerules[] = {
 		"",
 		"",
 		"",
+		"",
+		"",
+		"",
 		",",
 		"\t(",
 		")",
 		",\n",
 		";"
+	},
+	/* Dokuwiki */
+	{
+		"Dokuwiki",
+		"",
+		"",
+		"",
+		"^",
+		"^\n",
+		"^",
+		"",
+		"",
+		" | ",
+		"| ",
+		" |",
+		"\n",
+		" |\n"
 	}
 };
 
@@ -140,8 +170,8 @@ static gchar* convert_to_table_worker(gchar **rows, gboolean header,
 			header == TRUE)
 		{
 			g_string_append(replacement_str, rule->header_stop);
-			/* We are assuming, that if someone inserts a head, 
-			 * only in this case we will insert some special body. 
+			/* We are assuming, that if someone inserts a head,
+			 * only in this case we will insert some special body.
 			 * Might needs to be discussed further */
 			g_string_append(replacement_str, rule->body_start);
 		}
@@ -170,7 +200,7 @@ static gchar* convert_to_table_worker(gchar **rows, gboolean header,
 	{
 		g_string_append(replacement_str, rule->body_end);
 	}
-	
+
 	/* Adding the footer of table */
 	g_string_append(replacement_str, rule->end);
 
