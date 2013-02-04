@@ -42,6 +42,7 @@ enum
 };
 
 typedef struct {
+	const gchar *type;
 	const gchar *start;
 	const gchar *header_start;
 	const gchar *header_stop;
@@ -60,9 +61,11 @@ enum {
 	TC_SQL
 };
 
+
 TableConvertRule tablerules[] = {
 	/* LaTeX */
 	{
+		N_("LaTeX"),
 		"\\begin{table}[h]\n\\begin{tabular}{}\n",
 		"",
 		"",
@@ -76,6 +79,7 @@ TableConvertRule tablerules[] = {
 	},
 	/* HTML */
 	{
+		N_("HTML"),
 		"<table>\n",
 		"<thead>\n",
 		"</thead>\n",
@@ -89,6 +93,7 @@ TableConvertRule tablerules[] = {
 	},
 	/* SQL */
 	{
+		N_("SQL"),
 		"",
 		"",
 		"",
