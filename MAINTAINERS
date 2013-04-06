@@ -144,12 +144,6 @@ M: Volodymyr Kononenko <vm@kononenko.ws>
 W:
 S: Maintained
 
-pretty-printer
-P:
-M:
-W:
-S: Orphan
-
 pohelper
 P: Colomban Wendling <ban@herbesfolles.org>
 M: Colomban Wendling <ban@herbesfolles.org>

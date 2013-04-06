@@ -94,10 +94,6 @@ if ENABLE_POHELPER
 SUBDIRS += pohelper
 endif
 
-if ENABLE_PRETTY_PRINTER
-SUBDIRS += pretty-printer
-endif
-
 if ENABLE_SCOPE
 SUBDIRS += scope
 endif
