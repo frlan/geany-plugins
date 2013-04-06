@@ -17,12 +17,6 @@ M: Enrico Tröger <enrico.troeger@uvena.de>
 W: http://plugins.geany.org/addons.html
 S: Maintained
 
-codenav
-P:
-M:
-W:
-S: Orphan
-
 commander
 P: Colomban Wendling <ban@herbesfolles.org>
 M: Colomban Wendling <ban@herbesfolles.org>

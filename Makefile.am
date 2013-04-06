@@ -6,10 +6,6 @@ if ENABLE_ADDONS
 SUBDIRS += addons
 endif
 
-if ENABLE_CODENAV
-SUBDIRS += codenav
-endif
-
 if ENABLE_COMMANDER
 SUBDIRS += commander
 endif
