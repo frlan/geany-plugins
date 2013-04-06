@@ -72,12 +72,6 @@ M: Frank Lanitz <frank@frank.uvena.de>
 W: http://plugins.geany.org/geanylipsum.html
 S: Maintained
 
-geanylua
-P:
-M:
-W:
-S: Orphan
-
 geanymacro
 P: William Fraser <william.fraser@virgin.net>
 M: William Fraser <william.fraser@virgin.net>

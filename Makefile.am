@@ -42,10 +42,6 @@ if ENABLE_GEANYLIPSUM
 SUBDIRS += geanylipsum
 endif
 
-if ENABLE_GEANYLUA
-SUBDIRS += geanylua
-endif
-
 if ENABLE_GEANYMACRO
 SUBDIRS += geanymacro
 endif
