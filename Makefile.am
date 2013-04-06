@@ -98,10 +98,6 @@ if ENABLE_SCOPE
 SUBDIRS += scope
 endif
 
-if ENABLE_SHIFTCOLUMN
-SUBDIRS += shiftcolumn
-endif
-
 if ENABLE_SPELLCHECK
 SUBDIRS += spellcheck
 endif
