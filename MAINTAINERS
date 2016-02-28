@@ -89,12 +89,6 @@ M:
 W: http://plugins.geany.org/geanyinsertnum.html
 S: Orphaned
 
-geanylatex
-P: Frank Lanitz <frank@frank.uvena.de>
-M: Frank Lanitz <frank@frank.uvena.de>
-W: http://frank.uvena.de/en/Geany/geanylatex/
-S: Maintained
-
 geanylipsum
 P: Frank Lanitz <frank@frank.uvena.de>
 M: Frank Lanitz <frank@frank.uvena.de>
@@ -165,6 +159,12 @@ git-changebar
 P: Colomban Wendling <ban@herbesfolles.org>
 M: Colomban Wendling <ban@herbesfolles.org>
 W: http://plugins.geany.org/git-changebar.html
+S: Maintained
+
+LaTeX
+P: Frank Lanitz <frank@frank.uvena.de>
+M: Frank Lanitz <frank@frank.uvena.de>
+W: http://frank.uvena.de/en/Geany/latex/
 S: Maintained
 
 lineoperations
