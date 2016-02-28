@@ -1,7 +1,7 @@
 /*
- *	  geanylatex.c - Plugin to let Geany better work together with LaTeX
+ *	  latex.c - Plugin to let Geany better work together with LaTeX
  *
- *	  Copyright 2007-2015 Frank Lanitz <frank(at)frank(dot)uvena(dot)de>
+ *	  Copyright 2007-2016 Frank Lanitz <frank(at)frank(dot)uvena(dot)de>
  *	  Copyright 2005-2009 Enrico Tröger <enrico(dot)troeger(at)uvena(dot)de>
  *	  Copyright 2006-2009 Nick Treleaven <nick(dot)treleaven(at)btinternet(dot)com>
  *
@@ -30,7 +30,7 @@
 	#include "config.h" /* for the gettext domain */
 #endif
 
-#include "geanylatex.h"
+#include "latex.h"
 #include "ctype.h"
 
 PLUGIN_VERSION_CHECK(224)
@@ -38,9 +38,9 @@ PLUGIN_VERSION_CHECK(224)
 PLUGIN_SET_TRANSLATABLE_INFO(
 	LOCALEDIR,
 	GETTEXT_PACKAGE,
-	_("GeanyLaTeX"),
+	_("LaTeX"),
 	_("Extends LaTeX support"),
-	"0.7",
+	"0.8",
 	"Frank Lanitz <frank@frank.uvena.de>")
 
 GeanyPlugin	 *geany_plugin;

@@ -55,8 +55,8 @@ if ENABLE_GEANYINSERTNUM
 SUBDIRS += geanyinsertnum
 endif
 
-if ENABLE_GEANYLATEX
-SUBDIRS += geanylatex
+if ENABLE_LATEX
+SUBDIRS += latex
 endif
 
 if ENABLE_GEANYLIPSUM
