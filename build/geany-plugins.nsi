@@ -165,6 +165,7 @@ Section Uninstall
 	Delete "$INSTDIR\lib\geany\geanyextrasel.dll"
 	Delete "$INSTDIR\lib\geany\geanygendoc.dll"
 	Delete "$INSTDIR\lib\geany\geanyinsertnum.dll"
+	;Kept for clean unstallation of old geanylatex plugin files
 	Delete "$INSTDIR\lib\geany\geanylatex.dll"
 	Delete "$INSTDIR\lib\geany\geanylipsum.dll"
 	Delete "$INSTDIR\lib\geany\geanylua.dll"
@@ -177,6 +178,7 @@ Section Uninstall
 	Delete "$INSTDIR\lib\geany\geanyvc.dll"
 	Delete "$INSTDIR\lib\geany\geniuspaste.dll"
 	Delete "$INSTDIR\lib\geany\git-changebar.dll"
+	Delete "$INSTDIR\lib\geany\latex.dll"
 	Delete "$INSTDIR\lib\geany\lineoperations.dll"
 	Delete "$INSTDIR\lib\geany\markdown.dll"
 	Delete "$INSTDIR\lib\geany\overview.dll"
