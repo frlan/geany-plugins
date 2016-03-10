@@ -969,14 +969,14 @@
             <child>
               <object class="GtkRadioMenuItem" id="memory_group_1">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">_1</property>
+                <property name="label" translatable="no">_1</property>
                 <property name="use_underline">True</property>
               </object>
             </child>
             <child>
               <object class="GtkRadioMenuItem" id="memory_group_2">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">_2</property>
+                <property name="label" translatable="no">_2</property>
                 <property name="use_underline">True</property>
                 <property name="group">memory_group_1</property>
               </object>
@@ -984,7 +984,7 @@
             <child>
               <object class="GtkRadioMenuItem" id="memory_group_4">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">_4</property>
+                <property name="label" translatable="no">_4</property>
                 <property name="use_underline">True</property>
                 <property name="group">memory_group_1</property>
               </object>
@@ -992,7 +992,7 @@
             <child>
               <object class="GtkRadioMenuItem" id="memory_group_8">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">_8</property>
+                <property name="label" translatable="no">_8</property>
                 <property name="use_underline">True</property>
                 <property name="group">memory_group_1</property>
               </object>
