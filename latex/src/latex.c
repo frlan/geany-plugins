@@ -32,6 +32,9 @@
 
 #include "latex.h"
 #include "ctype.h"
+#include <errno.h>
+#include <glib.h>
+#include <glib/gstdio.h>
 
 PLUGIN_VERSION_CHECK(224)
 
@@ -2017,11 +2020,81 @@ void plugin_help(void)
 static void glatex_init_configuration(void)
 {
 	GKeyFile *config = g_key_file_new();
+	gchar *config_file_old = NULL;
+	gchar *config_dir = NULL;
+	gchar *config_dir_old = NULL;
+
+	/* Based upon code from geany core used to migrate from old
+	 * .geany to .config/geany*/
+
+	config_file = g_strconcat(geany->app->configdir, G_DIR_SEPARATOR_S,
+		"plugins", G_DIR_SEPARATOR_S,
+		"LaTeX", G_DIR_SEPARATOR_S, "general.conf", NULL);
+
+	#ifndef G_OS_WIN32
+	/* We try only to move if we are on not Windows platform */
+	config_file_old = g_strconcat(geany->app->configdir, G_DIR_SEPARATOR_S,
+		"plugins", G_DIR_SEPARATOR_S,
+		"geanyLaTeX", G_DIR_SEPARATOR_S, "general.conf", NULL);
+	config_dir = g_strconcat(geany->app->configdir, G_DIR_SEPARATOR_S,
+		"plugins", G_DIR_SEPARATOR_S, "LaTeX", NULL);
+	config_dir_old = g_strconcat(geany->app->configdir, G_DIR_SEPARATOR_S,
+		"plugins", G_DIR_SEPARATOR_S, "geanyLaTeX", NULL);
+
+	if (g_file_test(config_file_old, G_FILE_TEST_EXISTS))
+	{
+		if (! g_file_test(config_file, G_FILE_TEST_EXISTS))
+		{
+			/* If the migration is failing, there will be plugins/geanylatex as well as
+			 * plugins/latex with a general.conf
+			 * As old plugin configuration is loading after failed migration
+			 * saving options will save new ones to plugins/latex so we can assume
+			 * plugins/latex is having lates configuration.
+			 * The old folder stays.*/
+
+			if (dialogs_show_question(
+				_("Renamed plugin detected!\n"
+				  "\n"
+				  "GeanyLaTeX has been renamed to LaTeX -- you surely have "
+				  "already recognised it. \n"
+				  "Geany is able to migrate your old plugin configuration by "
+				  "moving the old configuration file to new location.\n"
+				  "Move now?")))
+			{
+
+				if (! g_file_test(config_dir, G_FILE_TEST_IS_DIR))
+					utils_mkdir(config_dir, TRUE);
+
+				if (g_rename(config_dir_old, config_dir) == 0)
+				{
+					dialogs_show_msgbox(GTK_MESSAGE_INFO,
+						_("Your configuration directory has been successfully moved from \"%s\" to \"%s\"."),
+						config_dir, config_dir_old);
+				}
+				else
+				{
+					/* If there was an error on migrating we need to load from original one.
+					 * When saving new configuration it will go to new folder so migration should
+					 * be implicit. */
+					g_free(config_file);
+					config_file = g_strdup(config_file_old);
+					dialogs_show_msgbox(GTK_MESSAGE_WARNING,
+						/* for translators: the third %s in brackets is the error message which
+						 * describes why moving the dir didn't work */
+						_("Your old configuration directory \"%s\" could not be moved to \"%s\" (%s). "
+						  "Please move manually the directory to the new location."),
+						config_dir_old, config_dir, g_strerror(errno));
+				}
+			}
+		}
+	}
+
+	g_free(config_dir_old);
+	g_free(config_dir);
+	g_free(config_file_old);
+	#endif
 
 	/* loading configurations from file ...*/
-	config_file = g_strconcat(geany->app->configdir, G_DIR_SEPARATOR_S,
-	"plugins", G_DIR_SEPARATOR_S,
-	"LaTeX", G_DIR_SEPARATOR_S, "general.conf", NULL);
 
 	/* ... and Initialising options from config file */
 	g_key_file_load_from_file(config, config_file, G_KEY_FILE_NONE, NULL);
