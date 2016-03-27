@@ -2,13 +2,8 @@ include $(top_srcdir)/build/vars.docs.mk
 
 plugin = latex
 dist_plugindoc_DATA = \
-	geanylatex2.html \
-	geanylatex3.html \
-	geanylatex4.html \
-	geanylatex.css \
-	geanylatex.html \
-	geanylatex.pdf \
-	geanylatex.tex \
+	latex.pdf \
+	latex.tex \
 	img/bibtex_reference.png \
 	img/insert_environment.png \
 	img/insert_label.png \
