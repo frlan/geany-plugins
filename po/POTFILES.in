@@ -133,21 +133,6 @@ geanygendoc/src/ggd-widget-doctype-selector.c
 # GeanyInsertnum
 geanyinsertnum/src/insertnum.c
 
-# LaTeX
-latex/src/bibtex.c
-latex/src/formatutils.c
-latex/src/latexenvironments.c
-latex/src/latexutils.c
-latex/src/templates.c
-latex/src/bibtexlabels.c
-latex/src/geanylatex.c
-latex/src/latexkeybindings.c
-latex/src/letters.c
-latex/src/formatpatterns.c
-latex/src/latexencodings.c
-latex/src/latexstructure.c
-latex/src/reftex.c
-
 # geanylipsum
 geanylipsum/src/geanylipsum.c
 
@@ -220,6 +205,21 @@ geniuspaste/src/geniuspaste.c
 # GitChangeBar
 [type: gettext/glade]git-changebar/data/prefs.ui
 git-changebar/src/gcb-plugin.c
+
+# LaTeX
+latex/src/bibtex.c
+latex/src/formatutils.c
+latex/src/latexenvironments.c
+latex/src/latexutils.c
+latex/src/templates.c
+latex/src/bibtexlabels.c
+latex/src/latex.c
+latex/src/latexkeybindings.c
+latex/src/letters.c
+latex/src/formatpatterns.c
+latex/src/latexencodings.c
+latex/src/latexstructure.c
+latex/src/reftex.c
 
 # LineOperations
 lineoperations/src/lineoperations.c
