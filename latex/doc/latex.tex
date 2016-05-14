@@ -42,8 +42,8 @@ openany,%
 
 \hypersetup{pdftex=true, colorlinks=true, breaklinks=true, linkcolor=black, urlcolor=darkblue}
 
-\title{Geany\LaTeX{} -- A \LaTeX{} plugin for Geany \\[1.5ex]
-	   \normalsize Version 0.7}
+\title{\LaTeX{} -- A \LaTeX{} plugin for Geany \\[1.5ex]
+	   \normalsize Version 0.8}
 \author{Frank Lanitz \\ \small{\href{mailto:frank@frank.uvena.de}{frank@frank.uvena.de}}}
 \date{\today}
 
@@ -53,23 +53,31 @@ openany,%
 
 \dedication{\normalsize \textbf{Note:} Please note that this document has been created on
 \today. If you are using a devel version from GIT, please compile and check
-\texttt{doc/geanylatex.tex} from sources. Please check Page \pageref
+\texttt{doc/latex.tex} from sources. Please check Page \pageref
 {sec:compiling_of_documentation}, Section \ref{sec:compiling_of_documentation} on how to do this. }
 
 
 \pagenumbering{Roman}
 \maketitle{}
 \tableofcontents{}
+
+\newpage{}
+
 \listoftables{}
 \listoffigures{}
 \lstlistoflistings{}
 
 \newpage{}
+
 \pagenumbering{arabic}
 \section{About the plugin}
 
-Geany\LaTeX{} is a little plugin to improve \LaTeX{} support in Geany.
-It implements a couple of hopefully useful functions:
+\textit{LaTeX}\footnote{This document needs to differ between the
+markup language \TeX{}, the extension set \LaTeX{} and the name of the
+plugin \textit{LaTeX}. Therefor whenever the plugin is referenced
+\textit{italic} is used. In case of the set of macros is referred the \LaTeX{} is printed. } is a little plugin to improve support for the
+identically called markup language in Geany. It implements a couple of
+hopefully useful functions:
 
 \begin{itemize}
 	\item A wizard to create new \LaTeX{} documents in a fast and easy way
@@ -92,11 +100,19 @@ It implements a couple of hopefully useful functions:
 
 \newpage
 \section{News \& ChangeLog}
+
+\subsection{\textit{LaTeX} 0.8 -- not yet released}
+\begin{itemize}
+	\item Rename plugin from Geany\LaTeX{} to just \textit{LaTeX} to get rid of Geany-prefix
+	\item Major rework of documentation
+\end{itemize}
+
 \subsection{Geany\LaTeX{} 0.7 -- 2012-07-08}
 \begin{itemize}
 	\item Added a feature to lower selection before inserting
 		\texttt{\textbackslash{}textsc\{\}}
 \end{itemize}
+
 \subsection{Geany\LaTeX{} 0.6 -- 2011-10-15}
 \begin{itemize}
 	\item Moved \LaTeX{} menu to a separate menu inside Geany main menu
@@ -111,7 +127,6 @@ It implements a couple of hopefully useful functions:
 
 \subsection{Geany\LaTeX{} 0.5 -- 2010-06-13}
 \begin{itemize}
-
 	\item Introduced custom templates for \LaTeX-Wizard
 	\item Added a \LaTeX-Wizard icon to the toolbar
 	\item Added shortcuts for inserting common list environments
@@ -133,7 +148,6 @@ It implements a couple of hopefully useful functions:
 	\item Automatic adding of \{\} after typing of \_{} and \symbol{94}
 	\item Added automatic inserting of \{\} after typing a command and
 		  hitting return in case of none pair is already present
-
 \end{itemize}
 
 \subsection{Geany\LaTeX{} 0.4 -- 2009-05-26}
@@ -149,71 +163,53 @@ It implements a couple of hopefully useful functions:
 	\item Added a function for special characters substitution during typing
 \end{itemize}
 
-\newpage
+\newpage{}
+
 \section{Requirements}
 
-\small{\textbf{Please note:} This section of documentation is only
-valid with standalone distribution of Geany\LaTeX{}. If you are
-planning to use the common geany-plugins project, please check
-documentation over there as there are some specialties you might
-like to know.}
-
-For compiling the plugin yourself, you will need the GTK ($>= 2.8.0$)
-libraries and header files. You will also need its dependency
-libraries and header files, such as Pango, Glib and ATK. All these
-files are available at \url{http://www.gtk.org}.
-
-And obviously, you will need to have Geany with its header files
-installed (in case you are compiling the plugin on your own). If you
-installed Geany from the sources, you should be ready to go. If you
-used a prepared package, e.g. from your distribution, you probably
-need to install an additional package, probably called geany-dev or
-geany-devel. Please note that in order to compile and use this
-plugin, you need Geany 0.21 or later (Geany Plugin API v199 or
-higher).
-
-Furthermore you need, of course, a C compiler and python installed.
-The GNU version of the C compiler is recommended. Furthermore, there
-should be a working \LaTeX-environment on your System.
-
-There is no special need in RAM or CPU, so the plugin should compile
-and run on all systems Geany is able to run.
+\textit{LaTeX} is part of the Geany-Plugins project and is sharing it's
+dependencies. To compile the plugin you will need:
+\begin{itemize}
+	\item Geany $>=$ 1.26 including its devel files
+	\item a C-compiler as e.g. gcc
+	\item Gtk2 $>=$ 2.24 or Gtk3 $>=$ 3.0 with its devel files
+	\item glib $>=$ 2.28
+	\item Autotools
+\end{itemize}
 
 \section{Compiling}
 \subsection{Compiling the plugin}
 For documentation how to compile the plugin, please check the
-documentation of the geany-plugins combined release.
+documentation of the geany-plugins combined release. You will find detailed information at \url{https://plugins.geany.org/install.html}.
+
 \subsection{Compiling the documentation}
 \label{sec:compiling_of_documentation}
 Sources of this documentation are available throught
-\texttt{doc/geanylatex.tex} inside source tree. To compile the sources,
-usage of \texttt{pdflatex} (should be delivered with your favorite
-\LaTeX{} distribution) is recommended. For compiling into HTML format you
-might like to use \texttt{htlatex}. The HTML version of this documentation
-shipped with source tarball has been compiled with:
-
-\begin{lstlisting}[caption={Compiling of documentation}]
-htlatex geanylatex.tex xhtml -cvalidate -interaction=batchmode
-\end{lstlisting}
-
-\texttt{htlatex} most likely can be found in a package called \texttt{tex4ht}
--- At least it's called like that on Debian based operating
-systems.
+\texttt{doc/latex.tex} inside source tree. To compile the sources,
+usage of \texttt{pdflatex} -- should be delivered with your favorite
+\LaTeX{} distribution -- is recommended.
 
 \section{Usage}
 \begin{figure}[h!]
-	\centering{\includegraphics[height=7cm]{img/plugin_manager.png}}
-	\caption{Plugin manager with Geany\LaTeX{} 0.5 at Geany 0.19}
+	\centering{\includegraphics[height=5cm]{img/plugin_manager.png}}
+	\caption{Plugin manager with \textit{LaTeX} 0.8 at Geany 1.28}
+	\label{img:geany_plugin_manager}
 \end{figure}
 
-After Geany\LaTeX{} has been installed successful the plugin can be
-loaded through Geany's plugin manager. Depending on configuration a
-new menu inside Geany's main menu will appear, an menu entry for the
-\LaTeX{}-wizard will appear inside the Tools menu as well as new key
-bindings will be available inside Geany's key binding interface.
-Inside the new menu you will find entries for functions supported by
-this version of the plugin. The main menu entry will be called
-something like \texttt{LaTeX}, depending on your locale.
+After \textit{LaTeX} has been installed the plugin can be loaded
+through Geany's plugin manager (picture \ref{img:geany_plugin_manager}).
+
+The plugin will add two new menus to Geany's main menu bar:
+\textbf{LaTeX} and \textbf{BibTeX}. Inside the LaTeX-menu you will find
+generic functions associated with \LaTeX{} as e.g. adding special
+characters or functions supporting you on working with references. The
+BibTeX-menu includes a basic set of functions connected to BibTeX.
+Section \ref{sec:features}, page \pageref{sec:features} will have a
+deeper look into what you can find there.
+
+The plugin is also adding a few possible key bindings to Geany. Chapter
+\ref{sec:key_bindings} page \pageref{sec:key_bindings}) is tacking care
+about this topic.
 
 Also if the option for showing the toolbar is activated on configuration
 dialog, the toolbar with common used format functions appears on at top
@@ -221,7 +217,7 @@ of editor widget. This feature is turned off by default.
 
 
 \section{Features}
-
+\label{sec:features}
 Let's go into more detail on some features.
 
 
@@ -259,7 +255,7 @@ Since KOMA script is quiet popular the option \textbf{Use KOMA script
 if possible} allows to activate the usage of KOMA script. If this
 options is activated instead of \texttt{book}, \texttt{scrbook} will
 be used as document class. Default is activated here. This option is
-deactivated by default and can be set through Geany\LaTeX{}'s
+deactivated by default and can be set through \textit{LaTeX}'s
 configuration dialog mentioned earlier in this document.
 
 This wizard can also be called by a shortcut. Please have a look onto
@@ -277,12 +273,12 @@ Document types that are currently supported by the wizard are:
 
 \subsubsection{Extending by own templates}
 \label{sec:extending_wizard_by_own_templates}
-Geany\LaTeX{} is offering a way for extending the wizard by user
+\textit{LaTeX} is offering a way for extending the wizard by user
 defined templates. This templates will be stored inside the plugin
 configuration dir with file extension glt. For creating a
 customized template you will need to create a normal *.tex file and
 store it inside the directory. On most Linux systems this should be
-\texttt{\textasciitilde/.config/geany/geanyLaTeX/}.
+\texttt{\textasciitilde/.config/geany/LaTeX/}.
 
 Inside your template you can refer to wizard's field by using some
 special strings which are:
@@ -307,10 +303,10 @@ special strings which are:
 \texttt{\{ENCODING\}} & Will be replace by choosen encoding from pulldown
 	of wizard\\
 \texttt{\{OPENING\}} & Will be replaced by »Dear Sir or Madame« in local
-	geany\LaTeX{} is running with. If you like to overwrite it, please
+	\textit{LaTeX} is running with. If you like to overwrite it, please
 	don't use the symbol and hardcode the phrase instead.\\
 \texttt{\{CLOSING\}} & Will be replaced by »With kind regards« in local
-	geany\LaTeX{} is running with. If you like to overwrite it, please
+	\textit{LaTeX} is running with. If you like to overwrite it, please
 	don't use the symbol and hardcode the phrase instead.\\
 	\end{tabular}
 \end{table}
@@ -332,20 +328,20 @@ build in template feature -- briefly introduced on Chapter \ref
 
 \subsection{Inserting References and Labels}
 An often used feature on writing of documents is adding and referring
-to labels. Geany\LaTeX{} is adding some support here for more
+to labels. \textit{LaTeX} is adding some support here for more
 comfortable adding new labels and reference offering a GUI.
 
 \begin{figure}[h!]
 	\centering{\includegraphics[height=2.5cm]{img/insert_label.png}}
-	\caption{Insert label dialog on Geany\LaTeX{} 0.5}
+	\caption{Insert label dialog on \textit{LaTeX} 0.5}
 \end{figure}
 
-After an label was added Geany\LaTeX{} is offering a dialog for
+After an label was added \textit{LaTeX} is offering a dialog for
 inserting normal references and page references to a label.
 
 \begin{figure}[h!]
 	\centering{\includegraphics[height=3.5cm]{img/insert_reference.png}}
-	\caption{Insert reference dialog on Geany\LaTeX{} 0.5}
+	\caption{Insert reference dialog on \textit{LaTeX} 0.5}
 \end{figure}
 
 The suggestions inside the pull down are based on the aux files
@@ -361,7 +357,7 @@ can be accessed by key binding also. See Chapter \ref
 
 \subsection{Support for BibTeX}
 \subsubsection{BibTeX templates for catalogue entries}
-Geany\LaTeX{} is offering a number of often used templates for BibTeX
+\textit{LaTeX} is offering a number of often used templates for BibTeX
 catalogue entries. They can be access by the plugin submenu in Geany's
 tools menu:
 \begin{itemize}
@@ -399,14 +395,14 @@ Year = {},
 
 \subsubsection{Inserting cite-reference}
 
-Geany\LaTeX{} is searching here for *.bib-files inside the directory
+\textit{LaTeX} is searching here for *.bib-files inside the directory
 of current active file. Its filtering for all references inside
 these files and putting it sorted and cleared from duplicated
 entries into the pulldown of the dialog.
 
 \begin{figure}[h!]
 	\centering{\includegraphics[height=2.5cm]{img/bibtex_reference.png}}
-	\caption{Insert BibTeX reference dialog on Geany\LaTeX{} 0.6}
+	\caption{Insert BibTeX reference dialog on \textit{LaTeX} 0.6}
 \end{figure}
 
 With selecting one of the entries inside the pull down or by typing
@@ -415,7 +411,7 @@ a \texttt{\textbackslash{}cite\{\}} into your document with your
 given reference.
 
 \subsection{Replacement of special characters}
-Geany\LaTeX{} is able to replace special characters to their there \TeX\
+\textit{LaTeX} is able to replace special characters to their there \TeX\
 substitute. This can be done in two different ways:
 
 \begin{enumerate}
@@ -439,7 +435,7 @@ The plugin is offering a number of special characters with their \TeX{}
 substitutes to be inserted on easy accessing through the plugin menu.
 
 \subsection{Inserting of Environment}
-Geany\LaTeX{} is offering a feature for inserting environments into your
+\textit{LaTeX} is offering a feature for inserting environments into your
 documents. It can be chosen from a pulldown menu and will be inserted at
 current position of cursor. If there is a selection activ, the selection
 will be included into environment.
@@ -463,12 +459,12 @@ will be inserted to the document.
 
 \begin{figure}[h!]
 	\centering{\includegraphics[height=2.5cm]{img/insert_environment.png}}
-	\caption{Insert environment dialog on Geany\LaTeX{} 0.5}
+	\caption{Insert environment dialog on \textit{LaTeX} 0.5}
 \end{figure}
 
 
 \subsection{Format}
-Geany\LaTeX{} is able to help on formation of text. For doing this its
+\textit{LaTeX} is able to help on formation of text. For doing this its
 offering you to insert often use format patterns to your document.
 Patterns that are currently supported are:
 
@@ -485,11 +481,11 @@ Patterns that are currently supported are:
 	\item right-aligned
 \end{itemize}
 
-Geany\LaTeX{} will add the correct format pattern to the document. If
+\textit{LaTeX} will add the correct format pattern to the document. If
 there is an selection active, that pattern will be placed around so
 the selected text will be formatted with this chosen style.
 
-Following items are also accessible using the Geany\LaTeX{} toolbar:
+Following items are also accessible using the \textit{LaTeX} toolbar:
 \begin{itemize}
 	\item Italic
 	\item Boldfont
@@ -530,7 +526,7 @@ on \TeX{}-like file types as well its turned on by default.
 From time you need to insert a new package into header of a document,
 but don't want to change to top of document and scroll back to where you were.
 
-Since version 0.5 Geany\LaTeX{} is offering an easy to use dialog
+Since version 0.5 \textit{LaTeX} is offering an easy to use dialog
 which is taking over the package name and possible package options to
 insert them into header of document. Right now, its placed direct in
 top of the \texttt{\textbackslash{}begin\{document\}} statement if
@@ -547,7 +543,7 @@ there is any.
 With this feature, converting a normal text to \LaTeX{} is getting a
 bit easier. If you start a document as plain text, with
 abbreviations in it like ABC. You import it into \LaTeX{}, and want
-the abbreviations in small caps. Geany\LaTeX{} converts the
+the abbreviations in small caps. \textit{LaTeX} converts the
 selection to just use lower case letters. So \texttt{ABC} is
 becoming \texttt{\textbackslash{}textsc\{abc\}} and later \textsc
 {abc}. This can be configured via the plugin configuration dialog
@@ -555,9 +551,9 @@ and default value is turned off.
 
 \section{Configuration}
 
-GeanyLaTeX{} can be configured in three major ways:
+\textit{LaTeX} can be configured in three major ways:
 \begin{enumerate}
-\item GeanyLaTeX{}'s configuration dialog (see chapter \ref{sec:configuration_dialog},
+\item \textit{LaTeX}'s configuration dialog (see chapter \ref{sec:configuration_dialog},
 	page \pageref{sec:configuration_dialog})
 \item Geany's keybindings interface (see chapter \ref{sec:key_bindings},
 	page \pageref{sec:key_bindings})
@@ -583,13 +579,13 @@ of editor widget. Option is turned off by default. Just give it a try.
 
 \begin{figure}[h!]
 	\centering{\includegraphics[height=2cm]{img/toolbar.png}}
-	\caption{Plugin toolbar of Geany\LaTeX{} 0.5}
+	\caption{Plugin toolbar of \textit{LaTeX} 0.5}
 \end{figure}
 
 
 \subsubsection{Capitalize letters on sentence begin}
 
-If this option is enabled, Geany\LaTeX{} will look for \textsc{.},
+If this option is enabled, \textit{LaTeX} will look for \textsc{.},
 \textsc{!} or \textsc{?} followed by a space. The next letter will
 be inserted in capital letters. Currenty this is not working for
 multichar letters as German Umlauts as well as the overwriting is
@@ -598,13 +594,13 @@ have the capital version of a letter in a particular case, just hit
 undo (Ctrl + z in most cases).
 
 \subsubsection{Add a wizard icon to Geany's main toolbar}
-This adds an icon for Geany\LaTeX{} wizard to Geany's main toolbar
-so its easy to access via mouse even the toolbar of Geany\LaTeX{} is
+This adds an icon for \textit{LaTeX} wizard to Geany's main toolbar
+so its easy to access via mouse even the toolbar of \textit{LaTeX} is
 not active and the tools menu is a way to far away.
 
 \subsubsection{Modus of autocompletion}
 \label{sec:modus_of_autocompletion}
-Here you can choose, whether the Geany\LaTeX{} should do some
+Here you can choose, whether the \textit{LaTeX} should do some
 autocompletion or not. Values are either
 \begin{enumerate}
 	\item Don't care about this inside plugin or
@@ -662,13 +658,13 @@ command line.
 
 \subsubsection{Deactivate toolbar items if document is a non \TeX-type}
 \label{deactivate_toolbaritems_with_non_latex}
-By default, Geany\LaTeX{} is deactivating buttons inside toolbar, which
+By default, \textit{LaTeX} is deactivating buttons inside toolbar, which
 don't make much sense to be applied on non-\TeX{} file types. As
 this is not always wished, its possible to turn this feature off
 via a hidden preferences.
 
 If you want to do so, just add a new section called \texttt{toolbar}
-into your general.conf file of Geany\LaTeX{} plugin which stats
+into your general.conf file of \textit{LaTeX} plugin which stats
 \texttt{glatex\_deactivate\_toolbaritems\_with\_non\_latex=false}.
 As a result, your config file could look similar to this:
 
@@ -689,7 +685,7 @@ Please ensure, you reload the plugin once this option has been changed.
 
 \subsubsection{Remove \LaTeX{} menu if document is a non \TeX-type}
 \label{deactivate_menubarentry_with_non_latex}
-Geany\LaTeX{} is enabling a separate menu inside Geany's main menu.
+\textit{LaTeX} is enabling a separate menu inside Geany's main menu.
 On default, its getting activated and deactivated based on the file
 type of the current document. However, from time to time its annying
 to have the menu entry switched maybe each time on switching between
@@ -753,7 +749,7 @@ glatex_set_autocompletion_contextsize=2
 \end{lstlisting}
 
 \subsubsection{Apply autocompletion only to \TeX{}-like files}
-With this option, you can force Geany\LaTeX{} to apply all autocompletion functions also to non-\TeX{} file types as for example an C-source code file. As this is only in a very low number of cases a really good idea, the option is by default turned on.
+With this option, you can force \textit{LaTeX} to apply all autocompletion functions also to non-\TeX{} file types as for example an C-source code file. As this is only in a very low number of cases a really good idea, the option is by default turned on.
 
 \begin{lstlisting}[caption={general.conf example for deactivating file %
 						   type specific restrictions for autocompletion}]
@@ -768,7 +764,7 @@ glatex_autocompletion_only_for_latex=false
 
 \subsubsection{Customized reference strings}
 
-Geany\LaTeX{} is able to insert references to a label where its
+\textit{LaTeX} is able to insert references to a label where its
 using some default value. As this value is not always optimal, it
 can be changed using a hidden preference by setting
 \texttt{glatex\_reference\_page}, \texttt{glatex\_reference\_chapter} or
@@ -798,7 +794,7 @@ more complicated constructs over  here which might require a new line inside.
 
 \subsubsection{Autocompletion of \{\} after \_ and \symbol{94}}
 \label{sec:autoadding_of_braces}
-Geany\LaTeX{} is able to autocomplete \{\} after typing \_ and
+\textit{LaTeX} is able to autocomplete \{\} after typing \_ and
 \symbol{94}. This might by useful on typing mathematic text and
 formula. However, as this option is turn on by default and it might
 get annoying you can deactivate it by setting \texttt{glatex\_set\_autobraces}
@@ -875,14 +871,14 @@ applied. Of course you should also check chapter \ref{sec:sending_a_patch},
 page \pageref{sec:sending_a_patch} for maybe some more detailed
 information before.
 
-\subsection{Testing \& bug reporting} Geany\LaTeX{} is tested mainly
+\subsection{Testing \& bug reporting} \textit{LaTeX} is tested mainly
 on x86 and x86\_64 architecture running GNU/Linux. Also it was
 tested on some Windows 32 versions like XP SP3 very briefly. Since
 there are also other systems available, testing on other platforms
 and maybe reporting of issues is highly appreciate.
 
 \subsection{Packaging}
-Geany\LaTeX{} is part of the geany-plugins project even though there
+\textit{LaTeX} is part of the geany-plugins project even though there
 are releases independent of a major release of the project. Therefor
 there are two things you can do here:
 \begin{enumerate}
@@ -913,7 +909,7 @@ one of the authors.
 
 \subsection{Propaganda}
 And of course, tell others of Geany and this plugin. If you like to do
-a talk about Geany\LaTeX{} and/or Geany in general, there is some code
+a talk about \textit{LaTeX}and/or Geany in general, there is some code
 available on \url{http://git.geany.org/talks/} you might can use as a
 start point for preparing your own presentation. If your favourite
 language is not yet available there, please feel free to do your own
@@ -932,9 +928,9 @@ git clone https://github.com/geany/geany-plugins.git
 \subsubsection{Sending a patch}
 \label{sec:sending_a_patch}
 If you want to create a patch, please respect the license of
-Geany\LaTeX{} as well as intellectual property of third. Patches that
+\textit{LaTeX} as well as intellectual property of third. Patches that
 should be included to the default distribution must be licensed under
-the same conditions as Geany\LaTeX{} by the copyright owner.
+the same conditions as \textit{LaTeX} by the copyright owner.
 
 \section{Known issues}
 At time of the the documentation was created no issue were known.
@@ -945,7 +941,7 @@ for all reported issues bug tracking system of GitHub at \\
 \section{Recommendations to improve work with \LaTeX{} and Geany}
 Geany is offering a number of nice features that can be used to make
 daily work more easy without need to write a new plugin or extend
-Geany\LaTeX{}.
+\textit{LaTeX}.
 
 \subsection{Geany's build system}
 
@@ -1044,7 +1040,7 @@ table. The plugin is also offering to convert such a list into a
 \LaTeX{}-like table and therefor is maybe useful on daily work.
 
 \section{License}
-Geany\LaTeX{} and all its parts is distributed under the terms of the
+\textit{LaTeX} and all its parts is distributed under the terms of the
 GNU General Public License as published by the Free Software
 Foundation; either version 2 of the License, or (at your option) any
 later version. A copy of this license can be found in the file COPYING
