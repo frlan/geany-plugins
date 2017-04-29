@@ -80,6 +80,7 @@ enum {
 enum {
   KB_GOTO_PREV_HUNK,
   KB_GOTO_NEXT_HUNK,
+  KB_UNDO_HUNK,
   KB_COUNT
 };
 
@@ -117,6 +118,17 @@ struct GotoNextHunkData {
   gint  next_line;
 };
 
+typedef struct UndoHunkData UndoHunkData;
+struct UndoHunkData {
+  guint    doc_id;
+  gint     line;
+  gboolean found;
+  gboolean first_line_removed;
+  gint     old_start;
+  gint     old_lines;
+  gint     new_start;
+  gint     new_lines;
+};
 
 static void         on_git_repo_changed         (GFileMonitor     *monitor,
                                                  GFile            *file,
@@ -720,16 +732,17 @@ diff_hunk_cb (const git_diff_delta *delta,
               void                 *data)
 {
   ScintillaObject *sci = data;
+  gint line;
   
   if (hunk->new_lines > 0) {
-    gint  line;
     guint marker = hunk->old_lines > 0 ? MARKER_LINE_CHANGED : MARKER_LINE_ADDED;
     
     for (line = hunk->new_start; line < hunk->new_start + hunk->new_lines; line++) {
       scintilla_send_message (sci, SCI_MARKERADD, line - 1, G_markers[marker].num);
     }
   } else {
-    scintilla_send_message (sci, SCI_MARKERADD, hunk->new_start - 1,
+    line = (hunk->new_start == 0) ? 0 : hunk->new_start - 1;
+    scintilla_send_message (sci, SCI_MARKERADD, line,
                             G_markers[MARKER_LINE_REMOVED].num);
   }
   
@@ -809,6 +822,12 @@ get_widget_for_buf_range (GeanyDocument *doc,
   return GTK_WIDGET (sci);
 }
 
+static gboolean
+is_first_line_removed (gint line, gint new_hunk_start, gint new_hunk_lines)
+{
+  return line == 1 && new_hunk_start == 0 && new_hunk_lines == 0;
+}
+
 static int
 tooltip_diff_hunk_cb (const git_diff_delta *delta,
                       const git_diff_hunk  *hunk,
@@ -821,8 +840,9 @@ tooltip_diff_hunk_cb (const git_diff_delta *delta,
   }
   
   if (hunk->old_lines > 0 &&
-      thd->line >= hunk->new_start &&
-      thd->line < hunk->new_start + MAX (1, hunk->new_lines)) {
+      (is_first_line_removed (thd->line, hunk->new_start, hunk->new_lines) ||
+       (thd->line >= hunk->new_start &&
+        thd->line < hunk->new_start + MAX (1, hunk->new_lines)))) {
     GtkWidget *old = get_widget_for_buf_range (thd->doc, thd->buf,
                                                hunk->old_start - 1,
                                                hunk->old_lines);
@@ -1033,13 +1053,13 @@ goto_next_hunk_diff_hunk_cb (const git_diff_delta *delta,
       if (data->next_line >= 0) {
         return 1;
       } else if (data->line < hunk->new_start - 1) {
-        data->next_line = hunk->new_start - 1;
+        data->next_line = (hunk->new_start == 0) ? 0 : hunk->new_start - 1;
       }
       break;
     
     case KB_GOTO_PREV_HUNK:
       if (data->line > hunk->new_start - 1 + MAX (hunk->new_lines - 1, 0)) {
-        data->next_line = hunk->new_start - 1;
+        data->next_line = (hunk->new_start == 0) ? 0 : hunk->new_start - 1;
       }
       break;
   }
@@ -1083,6 +1103,131 @@ on_kb_goto_next_hunk (guint kb)
     
     get_cached_blob_contents_async (doc->real_path, doc->id, FALSE,
                                     goto_next_hunk_cb, data);
+  }
+}
+
+static void
+insert_buf_range (GeanyDocument *doc,
+                  const git_buf *old_contents,
+                  gint           pos,
+                  gint           old_start,
+                  gint           old_lines)
+{
+  ScintillaObject *old_sci     = editor_create_widget (doc->editor);
+  gchar           *old_buf     = old_contents->ptr;
+  gsize            old_buf_len = old_contents->size;
+  gboolean         free_buf    = FALSE;
+  gint             old_pos_start, old_pos_end;
+  gchar           *old_range;
+  
+  /* convert the buffer to UTF-8 if necessary */
+  if (encoding_needs_coversion (doc->encoding)) {
+    free_buf = convert_encoding_inplace (&old_buf, &old_buf_len, free_buf,
+                                         "UTF-8", doc->encoding, NULL);
+  }
+  
+  scintilla_send_message (old_sci, SCI_ADDTEXT, old_buf_len, (glong) old_buf);
+
+  old_pos_start = sci_get_position_from_line (old_sci, old_start);
+  old_pos_end = sci_get_position_from_line (old_sci, old_start + old_lines);
+  old_range = sci_get_contents_range (old_sci, old_pos_start, old_pos_end);
+
+  sci_insert_text(doc->editor->sci, pos, old_range);
+
+  g_free(old_range);
+  
+  if (free_buf) {
+    g_free (old_buf);
+  }
+
+  g_object_ref_sink (old_sci);
+  g_object_unref (old_sci);
+}
+
+static int
+undo_hunk_diff_hunk_cb (const git_diff_delta *delta,
+                        const git_diff_hunk  *hunk,
+                        void                 *udata)
+{
+  UndoHunkData *data = udata;
+  gboolean first_line_removed = is_first_line_removed (data->line, hunk->new_start, hunk->new_lines);
+
+  if (first_line_removed ||
+      (data->line >= hunk->new_start &&
+       data->line < hunk->new_start + MAX (1, hunk->new_lines))) {
+    data->old_start = hunk->old_start;
+    data->old_lines = hunk->old_lines;
+    data->new_start = hunk->new_start;
+    data->new_lines = hunk->new_lines;
+    data->found = TRUE;
+    data->first_line_removed = first_line_removed;
+    return 1;
+  }
+  
+  return 0;
+}
+
+static void
+undo_hunk_cb (const gchar *path,
+              git_buf     *contents,
+              gpointer     udata)
+{
+  UndoHunkData  *data = udata;
+  GeanyDocument *doc  = document_get_current ();
+  
+  if (doc && doc->id == data->doc_id && contents) {
+    diff_buf_to_doc (contents, doc, undo_hunk_diff_hunk_cb, data);
+
+    if (data->found) {
+      ScintillaObject *sci = doc->editor->sci;
+
+      sci_start_undo_action(sci);
+
+      if (data->new_lines > 0) {
+        gint pos = sci_get_position_from_line(sci, data->new_start - 1);
+        sci_set_target_start(sci, pos);
+        pos = sci_get_position_from_line(sci, data->new_start + data->new_lines - 1);
+        sci_set_target_end(sci, pos);
+        sci_replace_target(sci, "", FALSE);
+      }
+
+      if (data->old_lines > 0) {
+        gint line = sci_get_current_line (sci);
+        gint pos;
+
+        if (data->new_lines == 0 && !data->first_line_removed) {
+          line++; /* marker for deleted hunk is on previous line except the 1st line */
+        }
+        pos = sci_get_position_from_line (sci, line);
+
+        insert_buf_range (doc, contents, pos,
+                          data->old_start - 1,
+                          data->old_lines);
+      }
+
+      sci_scroll_caret(sci);
+
+      sci_end_undo_action(sci);
+    }
+  }
+  
+  g_slice_free1 (sizeof *data, data);
+}
+
+static void
+on_kb_undo_hunk (guint kb)
+{
+  GeanyDocument *doc = document_get_current ();
+  
+  if (doc) {
+    UndoHunkData *data = g_slice_alloc (sizeof *data);
+  
+    data->doc_id = doc->id;
+    data->line   = sci_get_current_line (doc->editor->sci) + 1;
+    data->found  = FALSE;
+    
+    get_cached_blob_contents_async (doc->real_path, doc->id, FALSE,
+                                    undo_hunk_cb, data);
   }
 }
 
@@ -1272,6 +1417,8 @@ plugin_init (GeanyData *data)
                         "goto-prev-hunk", _("Go to the previous hunk"), NULL);
   keybindings_set_item (kb_group, KB_GOTO_NEXT_HUNK, on_kb_goto_next_hunk, 0, 0,
                         "goto-next-hunk", _("Go to the next hunk"), NULL);
+  keybindings_set_item (kb_group, KB_UNDO_HUNK, on_kb_undo_hunk, 0, 0,
+                        "undo-hunk", _("Undo hunk at the cursor position"), NULL);
   
   plugin_signal_connect (geany_plugin, NULL, "editor-notify", TRUE,
                          G_CALLBACK (on_editor_notify), NULL);
