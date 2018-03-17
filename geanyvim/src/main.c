@@ -73,7 +73,7 @@ struct
 	gint default_caret_style;
 
 	/* whether vi mode is enabled or disabled */
-	gboolean vi_enabled; 
+	gboolean vi_enabled;
 	/* if vi mode is valid for a single command and will be disabled automatically
 	 * after performing it */
 	gboolean vi_onetime;
@@ -275,7 +275,7 @@ static void load_config(void)
 
 	if (g_key_file_load_from_file(kf, filename, G_KEY_FILE_NONE, NULL))
 		state.vi_enabled = g_key_file_get_boolean(kf, CONF_GROUP, CONF_VI_MODE, NULL);
-  
+
 	g_key_file_free(kf);
 	g_free(filename);
 }
@@ -470,7 +470,7 @@ void plugin_init(GeanyData *data)
 	frame = gtk_frame_new(NULL);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(vi_widgets.prompt), frame);
-  
+
 	vi_widgets.entry = gtk_entry_new();
 	gtk_container_add(GTK_CONTAINER(frame), vi_widgets.entry);
 
@@ -486,7 +486,7 @@ void plugin_cleanup(void)
 {
 	if (state.default_caret_style != -1)
 	{
-		gsize i;
+		gsize i = 0;
 		foreach_document(i)
 		{
 			ScintillaObject *sci = documents[i]->editor->sci;
