@@ -197,6 +197,14 @@ geanyprj/src/xproject.c
 # Geanypy
 geanypy/src/geanypy-plugin.c
 
+# GeanyVim
+geanyvim/src/cmds.c
+geanyvim/src/cmds.h
+geanyvim/src/main.c
+geanyvim/src/state.h
+geanyvim/src/utils.c
+geanyvim/src/utils.h
+
 # geanyvc
 geanyvc/src/geanyvc.c
 geanyvc/src/geanyvc.h
