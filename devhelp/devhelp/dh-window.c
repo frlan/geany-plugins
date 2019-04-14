@@ -706,36 +706,36 @@ window_activate_show_search (GtkAction *action,
         gtk_widget_grab_focus (priv->search);
 }
 
-static void
-window_activate_about (GtkAction *action,
-                       DhWindow  *window)
-{
-        const gchar  *authors[] = {
-                "Mikael Hallendal <micke@imendio.com>",
-                "Richard Hult <richard@imendio.com>",
-                "Johan Dahlin <johan@gnome.org>",
-                "Ross Burton <ross@burtonini.com>",
-                "Aleksander Morgado <aleksander@lanedo.com>",
-                NULL
-        };
-        const gchar **documenters = NULL;
-        const gchar  *translator_credits = _("translator_credits");
-
-        /* i18n: Please don't translate "Devhelp" (it's marked as translatable
-         * for transliteration only) */
-        gtk_show_about_dialog (GTK_WINDOW (window),
-                               "name", _("Devhelp"),
-                               "version", PACKAGE_VERSION,
-                               "comments", _("A developers' help browser for GNOME"),
-                               "authors", authors,
-                               "documenters", documenters,
-                               "translator-credits",
-                               strcmp (translator_credits, "translator_credits") != 0 ?
-                               translator_credits : NULL,
-                               "website", "http://live.gnome.org/devhelp",
-                               "logo-icon-name", "devhelp",
-                               NULL);
-}
+//static void
+//window_activate_about (GtkAction *action,
+//                       DhWindow  *window)
+//{
+//        const gchar  *authors[] = {
+//                "Mikael Hallendal <micke@imendio.com>",
+//                "Richard Hult <richard@imendio.com>",
+//                "Johan Dahlin <johan@gnome.org>",
+//                "Ross Burton <ross@burtonini.com>",
+//                "Aleksander Morgado <aleksander@lanedo.com>",
+//                NULL
+//        };
+//        const gchar **documenters = NULL;
+//        const gchar  *translator_credits = _("translator_credits");
+//
+//        /* i18n: Please don't translate "Devhelp" (it's marked as translatable
+//         * for transliteration only) */
+//        gtk_show_about_dialog (GTK_WINDOW (window),
+//                               "name", _("Devhelp"),
+//                               "version", PACKAGE_VERSION,
+//                               "comments", _("A developers' help browser for GNOME"),
+//                               "authors", authors,
+//                               "documenters", documenters,
+//                               "translator-credits",
+//                               strcmp (translator_credits, "translator_credits") != 0 ?
+//                               translator_credits : NULL,
+//                               "website", "http://live.gnome.org/devhelp",
+//                               "logo-icon-name", "devhelp",
+//                               NULL);
+//}
 
 static void
 window_open_link_cb (DhWindow *window,
@@ -811,9 +811,9 @@ static const GtkActionEntry actions[] = {
           N_("Use the normal text size"),
           G_CALLBACK (window_activate_zoom_default) },
 
-        /* About menu */
-        { "About", GTK_STOCK_ABOUT, NULL, NULL, NULL,
-          G_CALLBACK (window_activate_about) },
+//        /* About menu */
+//        { "About", GTK_STOCK_ABOUT, NULL, NULL, NULL,
+//          G_CALLBACK (window_activate_about) },
 
         /* Fullscreen toolbar */
         { "LeaveFullscreen", GTK_STOCK_LEAVE_FULLSCREEN, NULL,
