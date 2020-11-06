@@ -1,40 +1,84 @@
-Plugin name
-===========
+# Pluginname
 
-.. image:: http://www.geany.org/images/geany_main_small.png
-   :width: 400
-   :alt: image of a plugin in work (if applicable)
-   :align: right
-   :target: http://www.geany.org/uploads/Gallery/geany_main.png
+## About
 
-.. contents::
+Describe the plugin so it will be clear what it does and why
+the user wants to use it. Use a short first paragraph which
+might be also used for auto-generating a short excerpt on the
+plugin list page.
 
-About
------
+Describe in further paragraphs (like this one) in more detail the
+plugin, if necessary. But use feature section for detailed
+feature-description.
 
-General information about what a plugin is all about.
+## Features
 
-Features
---------
+* A list
+* of plugin's
+* main features
 
-* list of features a plugin exposes
-* list of features a plugin exposes
-* list of features a plugin exposes
- 
-Usage
------
+## Requirements
 
-Information about using a plugin:
-descriptions, use-cases, hotkeys lists,
-configuration, known bugs etc.
+* Geany
+* GTK
+* Additional Dependencies, ...
 
-Requirements
-------------
+## Installation
 
-* first
-* second
- 
-Contact developers
-------------------
+This is a good section to add everything that needs to be done above of
 
-E-mails, IRC, other contacts
+    ./configure --enable-plugin=foo
+
+So e.g. thoughts about choosing the right webkit-package
+Also mention that installation might be not necessary if the
+plugin is part of the Geany-Plugins bundle.
+Also mention Windows and MacOS binary builds.
+
+
+## Usage
+
+Actually how to use the plugin. This is the main part of the README. It
+is fine to use e.g. screenshots inside this section.
+
+
+### Special notes
+…
+
+### Main feature a
+…
+
+### Main feature b
+…
+
+### Main feature c
+…
+
+## Configuration
+
+Many plugins come with individual configurations dialog that needs
+explanation as well as some keybdings.
+
+### Dialog
+…
+
+### Keybindings
+
+| Name of Binding | Short description | default |
+|-----------------|-------------------|---------|
+| …               | …                 | …       |
+
+
+### Separate Configuration files
+…
+
+
+## License
+This plugin is distributed under the terms of the GNU General Public License
+as published by the Free Software Foundation, either version 2 of the
+License, or (at your option) any later version. You should have received a copy
+of the GNU General Public License along with this plugin. If not, see
+[https://www.gnu.org/licenses/](https://www.gnu.org/licenses/) .
+
+## Contact & Bugtracker
+
+Add e.g. tracker URL or similar here
